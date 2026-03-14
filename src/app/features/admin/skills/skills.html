@@ -1,0 +1,128 @@
+<div class="skills-page">
+
+  <div class="page-header">
+    <h1>Skills</h1>
+    <p>Manage the global skill pool that students select from and assign to listings</p>
+  </div>
+
+  <div class="toast" *ngIf="toastVisible" [class.toast-error]="toastError">
+    {{ toastMessage }}
+  </div>
+
+  <!-- Add Skill Form -->
+  <div class="card">
+    <h2 class="card-title">Add new skill</h2>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Skill name</label>
+        <input type="text" [(ngModel)]="newName" placeholder="e.g. Angular"/>
+      </div>
+      <div class="form-group">
+        <label>Weight (1–5)</label>
+        <input type="number" [(ngModel)]="newWeight" min="1" max="5"/>
+      </div>
+      <div class="form-group">
+        <label>Target level (1–5)</label>
+        <input type="number" [(ngModel)]="newTarget" min="1" max="5"/>
+      </div>
+      <div class="form-group">
+        <label>Importance</label>
+        <select [(ngModel)]="newImportance">
+          <option>High</option>
+          <option>Medium</option>
+          <option>Low</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h2 class="card-title">Add learning resources <span class="optional">(optional)</span></h2>
+    <div class="resource-row">
+      <div class="form-group">
+        <label>Resource title</label>
+        <input type="text" [(ngModel)]="newResourceTitle" placeholder="e.g. Angular Official Docs"/>
+      </div>
+      <div class="form-group">
+        <label>URL</label>
+        <input type="text" [(ngModel)]="newResourceUrl" placeholder="https://..."/>
+      </div>
+      <div class="form-group">
+        <label>Type</label>
+        <select [(ngModel)]="newResourceType">
+          <option *ngFor="let t of resourceTypes">{{ t }}</option>
+        </select>
+      </div>
+      <button class="btn btn-primary assign-btn" (click)="addResource()">Add</button>
+    </div>
+
+    <div class="pending-resources" *ngIf="pendingResources.length > 0">
+      <div class="resource-tag" *ngFor="let r of pendingResources; let i = index">
+        <div class="resource-info">
+          <span class="res-type-badge">{{ r.type }}</span>
+          <span class="res-title">{{ r.title }}</span>
+          <span class="res-url">{{ r.url }}</span>
+        </div>
+        <button class="remove-btn" (click)="removePendingResource(i)">✕</button>
+      </div>
+    </div>
+
+    <div class="form-footer">
+      <button class="btn" (click)="resetForm()">Clear</button>
+      <button class="btn btn-primary" (click)="saveSkill()">Save skill</button>
+    </div>
+  </div>
+
+  <!-- Skills Table -->
+  <div class="card">
+    <h2 class="card-title">All skills</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Skill</th>
+          <th>Weight</th>
+          <th>Target level</th>
+          <th>Importance</th>
+          <th>Resources</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let skill of skills; let i = index">
+          <tr>
+            <td>{{ skill.name }}</td>
+            <td>{{ skill.weight }}</td>
+            <td>{{ skill.targetLevel }} / 5</td>
+            <td>
+              <span class="badge" [ngClass]="getImportanceClass(skill.importance)">
+                {{ skill.importance }}
+              </span>
+            </td>
+            <td>{{ skill.resources.length }} resource(s)</td>
+            <td>
+              <div class="actions">
+                <button class="btn btn-sm" (click)="toggleExpand(i)">
+                  {{ expandedIndex === i ? 'Hide' : 'View' }}
+                </button>
+                <button class="btn btn-sm btn-danger" (click)="removeSkill(i)">Remove</button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="expandedIndex === i">
+            <td colspan="6">
+              <div class="expanded-resources">
+                <p *ngIf="skill.resources.length === 0" class="empty-hint">No resources added.</p>
+                <div class="resource-tag" *ngFor="let r of skill.resources">
+                  <span class="res-type-badge">{{ r.type }}</span>
+                  <a [href]="r.url" target="_blank" class="res-link">{{ r.title }}</a>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+
+</div>

@@ -14,30 +14,62 @@ import { CommonModule } from '@angular/common';
 export class Login {
   loginData = { username: '', password: '' };
   errorMessage: string = '';
+  isSignupMode: boolean = false;
 
   constructor(private http: HttpClient, private router: Router) {}
 
   onLogin() {
+    if (!this.loginData.username || !this.loginData.password) {
+      this.errorMessage = 'Please enter your username and password.';
+      return;
+    }
+
     this.http.post('http://localhost:3000/api/login', this.loginData)
       .subscribe({
         next: (res: any) => {
           if (res.status === 'success') {
-        
             localStorage.setItem('userRole', res.role);
-            
-    
             if (res.role === 'admin') {
-              this.router.navigate(['/admin-dashboard']);
-            } else if (res.role === 'company') {
-              this.router.navigate(['/company-portal']);
+              this.router.navigate(['/admin']);
             } else {
-              this.router.navigate(['/student-home']);
+              this.router.navigate(['/student']);
             }
           }
         },
         error: (err) => {
-          this.errorMessage = err.error.message || 'Invalid Username or Password';
+          this.errorMessage = err.error?.message || 'Invalid username or password.';
         }
       });
+  }
+
+  onSignup() {
+    if (!this.loginData.username || !this.loginData.password) {
+      this.errorMessage = 'Please enter a username and password.';
+      return;
+    }
+
+    this.http.post('http://localhost:3000/api/register', this.loginData)
+      .subscribe({
+        next: (res: any) => {
+          alert(res.message || 'Registration successful! You can now log in.');
+          this.isSignupMode = false;
+          this.errorMessage = '';
+          this.loginData = { username: '', password: '' };
+        },
+        error: (err) => {
+          this.errorMessage = err.error?.message || 'Registration failed. Try again.';
+        }
+      });
+  }
+
+  onAdminQuickAccess() {
+    this.loginData = { username: 'admin', password: 'admin123' };
+    this.onLogin();
+  }
+
+  toggleMode() {
+    this.isSignupMode = !this.isSignupMode;
+    this.errorMessage = '';
+    this.loginData = { username: '', password: '' };
   }
 }

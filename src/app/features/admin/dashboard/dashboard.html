@@ -1,0 +1,27 @@
+<div class="dashboard">
+
+  <div class="page-header">
+    <h1>Dashboard</h1>
+    <p>Welcome back, Admin. Here is your overview.</p>
+  </div>
+
+  <div class="metrics">
+    <div class="metric-card" *ngFor="let stat of stats">
+      <p class="metric-label">{{ stat.label }}</p>
+      <p class="metric-value">{{ stat.value }}</p>
+    </div>
+  </div>
+
+  <div class="quick-actions">
+    <h2>Quick Actions</h2>
+    <div class="action-buttons">
+      <a routerLink="/admin/listings" class="action-btn primary">
+        Manage Listings
+      </a>
+      <a routerLink="/admin/skills" class="action-btn">
+        Manage Skills
+      </a>
+    </div>
+  </div>
+
+</div>

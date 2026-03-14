@@ -1,0 +1,79 @@
+<div class="roadmap-page">
+
+  <div class="page-header">
+    <button class="back-btn" (click)="goBack()">← Back to results</button>
+    <h1 *ngIf="listing">Skill Roadmap — {{ listing.title }}</h1>
+    <p>Work through these skill gaps to become eligible for this role</p>
+  </div>
+
+  <!-- Score Summary -->
+  <div class="score-summary" *ngIf="listing">
+    <div class="summary-left">
+      <span class="score-value" >{{ score }}%</span>
+      <span class="score-label">Your current score</span>
+    </div>
+    <div class="summary-divider"></div>
+    <div class="summary-right">
+      <span class="threshold-value">{{ listing.threshold }}%</span>
+      <span class="score-label">Required to qualify</span>
+    </div>
+    <div class="summary-divider"></div>
+    <div class="summary-right">
+      <span class="gaps-value">{{ skillGaps.length }}</span>
+      <span class="score-label">Skills to improve</span>
+    </div>
+  </div>
+
+  <!-- Skill Gap Cards -->
+  <div class="gap-cards">
+    <div class="gap-card" *ngFor="let gap of skillGaps">
+
+      <div class="gap-header">
+        <div class="gap-title-row">
+          <h2 class="gap-name">{{ gap.name }}</h2>
+          <span class="gap-badge" [class.badge-missing]="gap.isMissing"
+                                  [class.badge-improve]="!gap.isMissing">
+            {{ gap.isMissing ? 'Not yet learned' : 'Needs improvement' }}
+          </span>
+        </div>
+        <div class="level-row">
+          <span class="level-text">Current: <strong>{{ gap.currentLevel }} / 5</strong></span>
+          <span class="level-text">Target: <strong>{{ gap.targetLevel }} / 5</strong></span>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="progress-track">
+        <div class="progress-fill"
+             [class.fill-red]="gap.isMissing"
+             [class.fill-amber]="!gap.isMissing"
+             [style.width.%]="getProgressPercent(gap.currentLevel, gap.targetLevel)">
+        </div>
+      </div>
+
+      <!-- Resources -->
+      <div class="resources-section" *ngIf="gap.resources.length > 0">
+        <p class="resources-label">Recommended resources</p>
+        <ul class="resource-list">
+          <li class="resource-item" *ngFor="let r of gap.resources">
+            <span class="res-type">{{ r.type }}</span>
+            <a [href]="r.url" target="_blank" class="res-link">{{ r.title }}</a>
+          </li>
+        </ul>
+      </div>
+
+      <p class="no-resources" *ngIf="gap.resources.length === 0">
+        No resources added for this skill yet.
+      </p>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="page-footer">
+    <button class="btn-listings" (click)="goToListings()">
+      Check another internship
+    </button>
+  </div>
+
+</div>

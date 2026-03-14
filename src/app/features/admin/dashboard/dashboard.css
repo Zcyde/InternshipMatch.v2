@@ -1,0 +1,83 @@
+.dashboard {
+  max-width: 900px;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+}
+
+.page-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #111;
+  margin: 0 0 4px;
+}
+
+.page-header p {
+  font-size: 14px;
+  color: #888;
+  margin: 0;
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 2rem;
+}
+
+.metric-card {
+  background: #f8f8f8;
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.metric-label {
+  font-size: 13px;
+  color: #888;
+  margin: 0 0 6px;
+}
+
+.metric-value {
+  font-size: 28px;
+  font-weight: 600;
+  color: #111;
+  margin: 0;
+}
+
+.quick-actions h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111;
+  margin: 0 0 1rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.action-btn {
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  border: 1px solid #e0e0e0;
+  color: #555;
+  background: #fff;
+  transition: background 0.2s;
+}
+
+.action-btn:hover {
+  background: #f0f0f0;
+}
+
+.action-btn.primary {
+  background: #c8292b;
+  color: #fff;
+  border-color: #c8292b;
+}
+
+.action-btn.primary:hover {
+  background: #a82224;
+}

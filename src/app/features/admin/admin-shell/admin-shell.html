@@ -1,0 +1,30 @@
+<div class="shell-layout">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <p class="logo-title">InternshipMatch</p>
+      <span class="logo-sub">Admin Panel</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="dashboard" routerLinkActive="active-link">
+        Dashboard
+      </a>
+      <a routerLink="listings" routerLinkActive="active-link">
+        Listings
+      </a>
+      <a routerLink="skills" routerLinkActive="active-link">
+        Skills
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <button class="logout-btn" (click)="logout()">Log out</button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>

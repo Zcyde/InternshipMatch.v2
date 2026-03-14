@@ -1,0 +1,41 @@
+<div class="browse-page">
+
+  <div class="page-header">
+    <h1>Internship Listings</h1>
+    <p>Browse available roles and assess your compatibility for each one</p>
+  </div>
+
+  <div class="listings-grid">
+    <div class="listing-card" *ngFor="let listing of listings; let i = index">
+
+      <div class="card-top">
+        <div class="card-title-row">
+          <h2 class="listing-title">{{ listing.title }}</h2>
+          <span class="threshold-badge">Min. {{ listing.threshold }}%</span>
+        </div>
+        <p class="skills-count">{{ listing.skills.length }} required skills</p>
+      </div>
+
+      <div class="card-skills" *ngIf="expandedIndex === i">
+        <p class="skills-label">Required skills</p>
+        <div class="skill-tags">
+          <span class="skill-tag" *ngFor="let skill of listing.skills">
+            {{ skill.name }}
+            <span class="skill-weight">w: {{ skill.weight }}</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <button class="btn-ghost" (click)="toggleExpand(i)">
+          {{ expandedIndex === i ? 'Hide skills' : 'View skills' }}
+        </button>
+        <button class="btn-assess" (click)="assessRole(listing)">
+          Assess my compatibility →
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+</div>

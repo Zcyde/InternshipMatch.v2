@@ -1,0 +1,24 @@
+<div class="shell-layout">
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <p class="logo-title">InternshipMatch</p>
+      <span class="logo-badge">HAU SOC</span>
+    </div>
+
+    <nav class="topbar-nav">
+      <a routerLink="listings" routerLinkActive="active-link">
+        Browse Listings
+      </a>
+    </nav>
+
+    <div class="topbar-right">
+      <button class="logout-btn" (click)="logout()">Log out</button>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+
+</div>
