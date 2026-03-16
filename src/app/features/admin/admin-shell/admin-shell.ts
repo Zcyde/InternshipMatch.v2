@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { AuthService } from '../../../auth';
+import { AuthService } from '../../../auth.service';
 
 @Component({
   selector: 'app-admin-shell',

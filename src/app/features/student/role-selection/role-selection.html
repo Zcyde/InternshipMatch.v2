@@ -1,0 +1,46 @@
+<div class="role-selection-wrapper">
+
+  <div class="role-header">
+    <h1>What role are you targeting?</h1>
+    <p>Select the internship role you want to assess your compatibility for</p>
+  </div>
+
+  <!-- Loading state -->
+  <div class="loading" *ngIf="isLoading">
+    <p>Loading available roles...</p>
+  </div>
+
+  <!-- Error state -->
+  <div class="error" *ngIf="errorMessage">
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <!-- Roles grid -->
+  <div class="roles-grid" *ngIf="!isLoading && !errorMessage">
+    <div
+      class="role-card"
+      *ngFor="let listing of listings"
+      (click)="selectRole(listing._id)">
+
+      <div class="role-card-header">
+        <h2>{{ listing.title }}</h2>
+        <span class="threshold-badge">Min. {{ listing.threshold }}%</span>
+      </div>
+
+      <p class="role-description" *ngIf="listing.description">
+        {{ listing.description }}
+      </p>
+
+      <div class="role-card-footer">
+        <span class="select-label">Assess my compatibility →</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Empty state -->
+  <div class="empty" *ngIf="!isLoading && listings.length === 0">
+    <p>No roles are available at the moment. Please check back later.</p>
+  </div>
+
+</div>

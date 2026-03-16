@@ -2,77 +2,90 @@
 
   <div class="page-header">
     <button class="back-btn" (click)="goBack()">← Back to results</button>
-    <h1 *ngIf="listing">Skill Roadmap — {{ listing.title }}</h1>
+    <h1 *ngIf="result">Skill Roadmap — {{ result.listingTitle }}</h1>
     <p>Work through these skill gaps to become eligible for this role</p>
   </div>
 
-  <!-- Score Summary -->
-  <div class="score-summary" *ngIf="listing">
-    <div class="summary-left">
-      <span class="score-value" >{{ score }}%</span>
-      <span class="score-label">Your current score</span>
-    </div>
-    <div class="summary-divider"></div>
-    <div class="summary-right">
-      <span class="threshold-value">{{ listing.threshold }}%</span>
-      <span class="score-label">Required to qualify</span>
-    </div>
-    <div class="summary-divider"></div>
-    <div class="summary-right">
-      <span class="gaps-value">{{ skillGaps.length }}</span>
-      <span class="score-label">Skills to improve</span>
-    </div>
-  </div>
+  <div *ngIf="result">
 
-  <!-- Skill Gap Cards -->
-  <div class="gap-cards">
-    <div class="gap-card" *ngFor="let gap of skillGaps">
+    <!-- Score Summary -->
+    <div class="score-summary">
+      <div class="summary-item">
+        <span class="summary-value">{{ result.score }}%</span>
+        <span class="summary-label">Your current score</span>
+      </div>
+      <div class="summary-divider"></div>
+      <div class="summary-item">
+        <span class="summary-value">{{ result.threshold }}%</span>
+        <span class="summary-label">Required to qualify</span>
+      </div>
+      <div class="summary-divider"></div>
+      <div class="summary-item">
+        <span class="summary-value">{{ result.missingSkills.length }}</span>
+        <span class="summary-label">Skills to improve</span>
+      </div>
+    </div>
 
-      <div class="gap-header">
-        <div class="gap-title-row">
-          <h2 class="gap-name">{{ gap.name }}</h2>
-          <span class="gap-badge" [class.badge-missing]="gap.isMissing"
-                                  [class.badge-improve]="!gap.isMissing">
-            {{ gap.isMissing ? 'Not yet learned' : 'Needs improvement' }}
-          </span>
+    <!-- Missing Skill Cards -->
+    <div class="gap-cards">
+      <div class="gap-card" *ngFor="let skill of result.missingSkills">
+
+        <div class="gap-header">
+          <div class="gap-title-row">
+            <h2 class="gap-name">{{ skill.name }}</h2>
+            <span class="gap-badge badge-missing">Not yet learned</span>
+          </div>
+          <div class="level-row">
+            <span class="level-text">Target level: <strong>{{ skill.targetLevel }} / 5</strong></span>
+          </div>
         </div>
-        <div class="level-row">
-          <span class="level-text">Current: <strong>{{ gap.currentLevel }} / 5</strong></span>
-          <span class="level-text">Target: <strong>{{ gap.targetLevel }} / 5</strong></span>
+
+        <div class="progress-track">
+          <div class="progress-fill fill-red" style="width: 0%"></div>
+        </div>
+
+        <p class="no-resources">
+          Focus on reaching level {{ skill.targetLevel }} in this skill to improve your score.
+        </p>
+
+      </div>
+    </div>
+
+    <!-- Also show partially matched skills that need improvement -->
+    <div *ngIf="result.matchedSkills.length > 0">
+      <h2 class="section-title">Skills That Need Improvement</h2>
+      <div class="gap-cards">
+        <div class="gap-card improve-card"
+             *ngFor="let skill of result.matchedSkills"
+             [class.hidden]="skill.studentLevel >= skill.targetLevel">
+
+          <div class="gap-header">
+            <div class="gap-title-row">
+              <h2 class="gap-name">{{ skill.name }}</h2>
+              <span class="gap-badge badge-improve">Needs improvement</span>
+            </div>
+            <div class="level-row">
+              <span class="level-text">Current: <strong>{{ skill.studentLevel }} / 5</strong></span>
+              <span class="level-text">Target: <strong>{{ skill.targetLevel }} / 5</strong></span>
+            </div>
+          </div>
+
+          <div class="progress-track">
+            <div class="progress-fill fill-amber"
+                 [style.width.%]="(skill.studentLevel / skill.targetLevel) * 100">
+            </div>
+          </div>
+
         </div>
       </div>
-
-      <!-- Progress Bar -->
-      <div class="progress-track">
-        <div class="progress-fill"
-             [class.fill-red]="gap.isMissing"
-             [class.fill-amber]="!gap.isMissing"
-             [style.width.%]="getProgressPercent(gap.currentLevel, gap.targetLevel)">
-        </div>
-      </div>
-
-      <!-- Resources -->
-      <div class="resources-section" *ngIf="gap.resources.length > 0">
-        <p class="resources-label">Recommended resources</p>
-        <ul class="resource-list">
-          <li class="resource-item" *ngFor="let r of gap.resources">
-            <span class="res-type">{{ r.type }}</span>
-            <a [href]="r.url" target="_blank" class="res-link">{{ r.title }}</a>
-          </li>
-        </ul>
-      </div>
-
-      <p class="no-resources" *ngIf="gap.resources.length === 0">
-        No resources added for this skill yet.
-      </p>
-
     </div>
+
   </div>
 
   <!-- Footer -->
   <div class="page-footer">
-    <button class="btn-listings" (click)="goToListings()">
-      Check another internship
+    <button class="btn-listings" (click)="goToRoleSelection()">
+      Check another role
     </button>
   </div>
 

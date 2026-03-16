@@ -2,127 +2,117 @@
 
   <div class="page-header">
     <h1>Skills</h1>
-    <p>Manage the global skill pool that students select from and assign to listings</p>
+    <p>Manage skills assigned to each internship listing</p>
   </div>
 
+  <!-- Toast -->
   <div class="toast" *ngIf="toastVisible" [class.toast-error]="toastError">
     {{ toastMessage }}
   </div>
 
-  <!-- Add Skill Form -->
+  <!-- Select Listing -->
   <div class="card">
-    <h2 class="card-title">Add new skill</h2>
+    <h2 class="card-title">Select a listing to manage its skills</h2>
+    <div class="form-group">
+      <label>Listing</label>
+      <select [(ngModel)]="selectedListingId" (change)="onListingSelect()">
+        <option value="">-- Select a listing --</option>
+        <option *ngFor="let l of listings" [value]="l._id">
+          {{ l.title }} {{ l.isPublished ? '(Published)' : '(Draft)' }}
+        </option>
+      </select>
+    </div>
+    <p class="loading-hint" *ngIf="isLoadingListings">Loading listings...</p>
+  </div>
 
+  <!-- Add Skill Form -->
+  <div class="card" *ngIf="selectedListingId">
+    <h2 class="card-title">Add new skill to this listing</h2>
     <div class="form-grid">
       <div class="form-group">
         <label>Skill name</label>
-        <input type="text" [(ngModel)]="newName" placeholder="e.g. Angular"/>
+        <input type="text" [(ngModel)]="newName"
+               placeholder="e.g. Angular"/>
       </div>
       <div class="form-group">
-        <label>Weight (1–5)</label>
-        <input type="number" [(ngModel)]="newWeight" min="1" max="5"/>
+        <label>Weight (1–10)</label>
+        <input type="number" [(ngModel)]="newWeight" min="1" max="10"/>
       </div>
       <div class="form-group">
         <label>Target level (1–5)</label>
         <input type="number" [(ngModel)]="newTarget" min="1" max="5"/>
       </div>
-      <div class="form-group">
-        <label>Importance</label>
-        <select [(ngModel)]="newImportance">
-          <option>High</option>
-          <option>Medium</option>
-          <option>Low</option>
-        </select>
-      </div>
     </div>
-
-    <div class="divider"></div>
-
-    <h2 class="card-title">Add learning resources <span class="optional">(optional)</span></h2>
-    <div class="resource-row">
-      <div class="form-group">
-        <label>Resource title</label>
-        <input type="text" [(ngModel)]="newResourceTitle" placeholder="e.g. Angular Official Docs"/>
-      </div>
-      <div class="form-group">
-        <label>URL</label>
-        <input type="text" [(ngModel)]="newResourceUrl" placeholder="https://..."/>
-      </div>
-      <div class="form-group">
-        <label>Type</label>
-        <select [(ngModel)]="newResourceType">
-          <option *ngFor="let t of resourceTypes">{{ t }}</option>
-        </select>
-      </div>
-      <button class="btn btn-primary assign-btn" (click)="addResource()">Add</button>
-    </div>
-
-    <div class="pending-resources" *ngIf="pendingResources.length > 0">
-      <div class="resource-tag" *ngFor="let r of pendingResources; let i = index">
-        <div class="resource-info">
-          <span class="res-type-badge">{{ r.type }}</span>
-          <span class="res-title">{{ r.title }}</span>
-          <span class="res-url">{{ r.url }}</span>
-        </div>
-        <button class="remove-btn" (click)="removePendingResource(i)">✕</button>
-      </div>
-    </div>
-
     <div class="form-footer">
       <button class="btn" (click)="resetForm()">Clear</button>
-      <button class="btn btn-primary" (click)="saveSkill()">Save skill</button>
+      <button class="btn btn-primary" (click)="saveSkill()" [disabled]="isSaving">
+        {{ isSaving ? 'Saving...' : 'Add skill' }}
+      </button>
     </div>
   </div>
 
   <!-- Skills Table -->
-  <div class="card">
-    <h2 class="card-title">All skills</h2>
-    <table>
+  <div class="card" *ngIf="selectedListingId">
+    <h2 class="card-title">Skills for this listing</h2>
+
+    <p class="loading-hint" *ngIf="isLoadingSkills">Loading skills...</p>
+
+    <table *ngIf="!isLoadingSkills && skills.length > 0">
       <thead>
         <tr>
           <th>Skill</th>
           <th>Weight</th>
           <th>Target level</th>
-          <th>Importance</th>
-          <th>Resources</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngFor="let skill of skills; let i = index">
-          <tr>
+        <ng-container *ngFor="let skill of skills">
+
+          <!-- Normal row -->
+          <tr *ngIf="editingSkillId !== skill._id">
             <td>{{ skill.name }}</td>
             <td>{{ skill.weight }}</td>
-            <td>{{ skill.targetLevel }} / 5</td>
-            <td>
-              <span class="badge" [ngClass]="getImportanceClass(skill.importance)">
-                {{ skill.importance }}
-              </span>
-            </td>
-            <td>{{ skill.resources.length }} resource(s)</td>
+            <td>{{ skill.targetLevel }} / 5 — {{ proficiencyLabel(skill.targetLevel) }}</td>
             <td>
               <div class="actions">
-                <button class="btn btn-sm" (click)="toggleExpand(i)">
-                  {{ expandedIndex === i ? 'Hide' : 'View' }}
-                </button>
-                <button class="btn btn-sm btn-danger" (click)="removeSkill(i)">Remove</button>
+                <button class="btn btn-sm" (click)="startEdit(skill)">Edit</button>
+                <button class="btn btn-sm btn-danger"
+                        (click)="removeSkill(skill._id)">Remove</button>
               </div>
             </td>
           </tr>
-          <tr *ngIf="expandedIndex === i">
-            <td colspan="6">
-              <div class="expanded-resources">
-                <p *ngIf="skill.resources.length === 0" class="empty-hint">No resources added.</p>
-                <div class="resource-tag" *ngFor="let r of skill.resources">
-                  <span class="res-type-badge">{{ r.type }}</span>
-                  <a [href]="r.url" target="_blank" class="res-link">{{ r.title }}</a>
-                </div>
+
+          <!-- Edit row -->
+          <tr *ngIf="editingSkillId === skill._id">
+            <td>
+              <input type="text" [(ngModel)]="editName" class="inline-input"/>
+            </td>
+            <td>
+              <input type="number" [(ngModel)]="editWeight"
+                     min="1" max="10" class="inline-input short"/>
+            </td>
+            <td>
+              <input type="number" [(ngModel)]="editTarget"
+                     min="1" max="5" class="inline-input short"/>
+            </td>
+            <td>
+              <div class="actions">
+                <button class="btn btn-sm btn-primary"
+                        (click)="saveEdit(skill._id)">Save</button>
+                <button class="btn btn-sm" (click)="cancelEdit()">Cancel</button>
               </div>
             </td>
           </tr>
+
         </ng-container>
       </tbody>
     </table>
+
+    <p class="empty-hint"
+       *ngIf="!isLoadingSkills && skills.length === 0">
+      No skills assigned to this listing yet.
+    </p>
   </div>
 
 </div>

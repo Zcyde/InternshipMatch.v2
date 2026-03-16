@@ -39,12 +39,12 @@ export const routes: Routes = [
       import('./features/student/student-shell/student-shell')
         .then(m => m.StudentShell),
     children: [
-      { path: '', redirectTo: 'listings', pathMatch: 'full' },
+      { path: '', redirectTo: 'role-selection', pathMatch: 'full' },
       {
-        path: 'listings',
+        path: 'role-selection',
         loadComponent: () =>
-          import('./features/student/listings-browse/listings-browse')
-            .then(m => m.ListingsBrowse)
+          import('./features/student/role-selection/role-selection')
+            .then(m => m.RoleSelection)
       },
       {
         path: 'skill-input/:roleId',

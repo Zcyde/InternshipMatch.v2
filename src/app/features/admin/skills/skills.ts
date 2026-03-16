@@ -1,14 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-interface Skill {
-  name: string;
-  weight: number;
-  targetLevel: number;
-  importance: 'High' | 'Medium' | 'Low';
-  resources: { title: string; url: string; type: string }[];
-}
+import { ListingService } from '../../../listing.service';
 
 @Component({
   selector: 'app-skills',
@@ -17,112 +10,161 @@ interface Skill {
   templateUrl: './skills.html',
   styleUrl: './skills.css'
 })
-export class Skills {
+export class Skills implements OnInit {
 
-  skills: Skill[] = [
-    {
-      name: 'Angular',
-      weight: 5,
-      targetLevel: 4,
-      importance: 'High',
-      resources: [
-        { title: 'Angular Official Docs', url: 'https://angular.io/docs', type: 'Docs' },
-        { title: 'Angular Crash Course', url: 'https://youtube.com', type: 'Video' }
-      ]
-    },
-    {
-      name: 'TypeScript',
-      weight: 3,
-      targetLevel: 3,
-      importance: 'Medium',
-      resources: [
-        { title: 'TypeScript Handbook', url: 'https://typescriptlang.org', type: 'Docs' }
-      ]
-    },
-    {
-      name: 'REST APIs',
-      weight: 2,
-      targetLevel: 3,
-      importance: 'Medium',
-      resources: []
-    }
-  ];
+  // All listings for the dropdown
+  listings: any[] = [];
 
+  // Selected listing
+  selectedListingId = '';
+
+  // Skills for selected listing
+  skills: any[] = [];
+
+  // Form fields
   newName = '';
   newWeight = 3;
   newTarget = 3;
-  newImportance: 'High' | 'Medium' | 'Low' = 'Medium';
 
-  newResourceTitle = '';
-  newResourceUrl = '';
-  newResourceType = 'Docs';
-  pendingResources: { title: string; url: string; type: string }[] = [];
+  // Edit mode
+  editingSkillId: string | null = null;
+  editName = '';
+  editWeight = 3;
+  editTarget = 3;
 
-  expandedIndex: number | null = null;
+  // States
+  isLoadingListings = true;
+  isLoadingSkills = false;
+  isSaving = false;
 
+  // Toast
   toastMessage = '';
   toastVisible = false;
   toastError = false;
 
-  resourceTypes = ['Docs', 'Video', 'Course', 'Article', 'Tutorial'];
+  constructor(private listingService: ListingService) {}
 
-  addResource() {
-    if (!this.newResourceTitle.trim() || !this.newResourceUrl.trim()) {
-      this.showToast('Please fill in resource title and URL.', true);
-      return;
-    }
-    this.pendingResources.push({
-      title: this.newResourceTitle.trim(),
-      url: this.newResourceUrl.trim(),
-      type: this.newResourceType
+  ngOnInit() {
+    this.listingService.getAllListings().subscribe({
+      next: (res: any) => {
+        this.listings = res.listings;
+        this.isLoadingListings = false;
+      },
+      error: () => {
+        this.showToast('Failed to load listings.', true);
+        this.isLoadingListings = false;
+      }
     });
-    this.newResourceTitle = '';
-    this.newResourceUrl = '';
-    this.newResourceType = 'Docs';
   }
 
-  removePendingResource(index: number) {
-    this.pendingResources.splice(index, 1);
+  onListingSelect() {
+    if (!this.selectedListingId) return;
+    this.isLoadingSkills = true;
+    this.skills = [];
+
+    this.listingService.getSkillsByListing(this.selectedListingId).subscribe({
+      next: (res: any) => {
+        this.skills = res.skills;
+        this.isLoadingSkills = false;
+      },
+      error: () => {
+        this.showToast('Failed to load skills.', true);
+        this.isLoadingSkills = false;
+      }
+    });
   }
 
   saveSkill() {
+    if (!this.selectedListingId) {
+      this.showToast('Please select a listing first.', true);
+      return;
+    }
     if (!this.newName.trim()) {
       this.showToast('Please enter a skill name.', true);
       return;
     }
     if (this.skills.find(s => s.name.toLowerCase() === this.newName.toLowerCase())) {
-      this.showToast('This skill already exists.', true);
+      this.showToast('This skill already exists in this listing.', true);
       return;
     }
 
-    this.skills.push({
+    this.isSaving = true;
+
+    this.listingService.addSkill({
       name: this.newName.trim(),
+      listing: this.selectedListingId,
       weight: this.newWeight,
-      targetLevel: this.newTarget,
-      importance: this.newImportance,
-      resources: [...this.pendingResources]
+      targetLevel: this.newTarget
+    }).subscribe({
+      next: (res: any) => {
+        this.skills.push(res.skill);
+        this.showToast(`"${this.newName}" added successfully.`);
+        this.resetForm();
+        this.isSaving = false;
+      },
+      error: () => {
+        this.showToast('Failed to add skill.', true);
+        this.isSaving = false;
+      }
     });
-
-    this.showToast(`"${this.newName}" added successfully.`);
-    this.resetForm();
   }
 
-  removeSkill(index: number) {
-    this.skills.splice(index, 1);
+  startEdit(skill: any) {
+    this.editingSkillId = skill._id;
+    this.editName = skill.name;
+    this.editWeight = skill.weight;
+    this.editTarget = skill.targetLevel;
   }
 
-  toggleExpand(index: number) {
-    this.expandedIndex = this.expandedIndex === index ? null : index;
+  saveEdit(skillId: string) {
+    this.listingService.updateSkill(skillId, {
+      name: this.editName,
+      weight: this.editWeight,
+      targetLevel: this.editTarget
+    }).subscribe({
+      next: (res: any) => {
+        const index = this.skills.findIndex(s => s._id === skillId);
+        if (index !== -1) this.skills[index] = res.skill;
+        this.editingSkillId = null;
+        this.showToast('Skill updated.');
+      },
+      error: () => {
+        this.showToast('Failed to update skill.', true);
+      }
+    });
+  }
+
+  cancelEdit() {
+    this.editingSkillId = null;
+  }
+
+  removeSkill(skillId: string) {
+    this.listingService.deleteSkill(skillId).subscribe({
+      next: () => {
+        this.skills = this.skills.filter(s => s._id !== skillId);
+        this.showToast('Skill removed.');
+      },
+      error: () => {
+        this.showToast('Failed to remove skill.', true);
+      }
+    });
+  }
+
+  proficiencyLabel(level: number): string {
+    switch (level) {
+      case 1: return 'Beginner';
+      case 2: return 'Elementary';
+      case 3: return 'Intermediate';
+      case 4: return 'Advanced';
+      case 5: return 'Expert';
+      default: return 'N/A';
+    }
   }
 
   resetForm() {
     this.newName = '';
     this.newWeight = 3;
     this.newTarget = 3;
-    this.newImportance = 'Medium';
-    this.pendingResources = [];
-    this.newResourceTitle = '';
-    this.newResourceUrl = '';
   }
 
   showToast(message: string, isError = false) {
@@ -130,11 +172,5 @@ export class Skills {
     this.toastError = isError;
     this.toastVisible = true;
     setTimeout(() => this.toastVisible = false, 3000);
-  }
-
-  getImportanceClass(importance: string) {
-    if (importance === 'High') return 'badge-high';
-    if (importance === 'Medium') return 'badge-medium';
-    return 'badge-low';
   }
 }

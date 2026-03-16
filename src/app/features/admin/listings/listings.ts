@@ -1,18 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ListingService } from '../../../listing.service';
 
-interface Skill {
+interface AssignedSkill {
   name: string;
   weight: number;
   targetLevel: number;
-}
-
-interface Listing {
-  title: string;
-  threshold: number;
-  status: 'Published' | 'Draft';
-  skills: Skill[];
 }
 
 @Component({
@@ -22,19 +16,20 @@ interface Listing {
   templateUrl: './listings.html',
   styleUrl: './listings.css'
 })
-export class Listings {
+export class Listings implements OnInit {
 
-  // Available skills from the global skill pool
+  // Available skills pool
   availableSkills: string[] = [
     'Angular', 'TypeScript', 'REST APIs', 'Git & Version Control',
     'Node.js', 'CSS / Tailwind', 'SQL', 'Figma / UI Design',
     'React', 'Python', 'Java', 'MongoDB'
   ];
 
-  // Form fields for new listing
+  // Form fields
   newTitle = '';
+  newDescription = '';
   newThreshold = 70;
-  newStatus: 'Published' | 'Draft' = 'Published';
+  newIsPublished = true;
 
   // Skill assignment fields
   selectedSkill = '';
@@ -42,39 +37,44 @@ export class Listings {
   selectedTarget = 3;
 
   // Skills assigned to the current listing being created
-  assignedSkills: Skill[] = [];
+  assignedSkills: AssignedSkill[] = [];
 
-  // Toast message
+  // All listings from DB
+  listings: any[] = [];
+
+  // Skills per listing (keyed by listingId)
+  listingSkills: { [key: string]: any[] } = {};
+
+  // Expanded listing index
+  expandedId: string | null = null;
+
+  // Toast
   toastMessage = '';
   toastVisible = false;
   toastError = false;
 
-  // All saved listings
-  listings: Listing[] = [
-    {
-      title: 'Frontend Developer Intern',
-      threshold: 70,
-      status: 'Published',
-      skills: [
-        { name: 'Angular', weight: 5, targetLevel: 4 },
-        { name: 'TypeScript', weight: 3, targetLevel: 3 },
-        { name: 'REST APIs', weight: 2, targetLevel: 3 }
-      ]
-    },
-    {
-      title: 'Backend Developer Intern',
-      threshold: 65,
-      status: 'Published',
-      skills: [
-        { name: 'Node.js', weight: 4, targetLevel: 3 },
-        { name: 'SQL', weight: 3, targetLevel: 3 },
-        { name: 'REST APIs', weight: 3, targetLevel: 2 }
-      ]
-    }
-  ];
+  // Loading states
+  isSaving = false;
+  isLoading = true;
 
-  // Expanded listing for viewing assigned skills
-  expandedIndex: number | null = null;
+  constructor(private listingService: ListingService) {}
+
+  ngOnInit() {
+    this.loadListings();
+  }
+
+  loadListings() {
+    this.listingService.getAllListings().subscribe({
+      next: (res: any) => {
+        this.listings = res.listings;
+        this.isLoading = false;
+      },
+      error: () => {
+        this.showToast('Failed to load listings.', true);
+        this.isLoading = false;
+      }
+    });
+  }
 
   addSkillToListing() {
     if (!this.selectedSkill) {
@@ -85,13 +85,11 @@ export class Listings {
       this.showToast('This skill is already assigned.', true);
       return;
     }
-
     this.assignedSkills.push({
       name: this.selectedSkill,
       weight: this.selectedWeight,
       targetLevel: this.selectedTarget
     });
-
     this.selectedSkill = '';
     this.selectedWeight = 3;
     this.selectedTarget = 3;
@@ -111,31 +109,102 @@ export class Listings {
       return;
     }
 
-    this.listings.push({
+    this.isSaving = true;
+
+    // Step 1 — Create the listing WITH isPublished included
+    this.listingService.createListing({
       title: this.newTitle.trim(),
+      description: this.newDescription.trim(),
       threshold: this.newThreshold,
-      status: this.newStatus,
-      skills: [...this.assignedSkills]
+      isPublished: this.newIsPublished
+    }).subscribe({
+      next: (res: any) => {
+        const listingId = res.listing._id;
+
+        // Step 2 — Save each assigned skill
+        const skillSaves = this.assignedSkills.map(skill =>
+          this.listingService.addSkill({
+            name: skill.name,
+            listing: listingId,
+            weight: skill.weight,
+            targetLevel: skill.targetLevel
+          }).toPromise()
+        );
+
+        Promise.all(skillSaves).then(() => {
+          this.showToast(`"${this.newTitle}" saved successfully.`);
+          this.resetForm();
+          this.loadListings();
+          this.isSaving = false;
+        }).catch(() => {
+          this.showToast('Listing saved but some skills failed.', true);
+          this.loadListings();
+          this.isSaving = false;
+        });
+      },
+      error: () => {
+        this.showToast('Failed to save listing.', true);
+        this.isSaving = false;
+      }
     });
-
-    this.showToast(`"${this.newTitle}" saved successfully.`);
-    this.resetForm();
   }
 
-  removeListing(index: number) {
-    this.listings.splice(index, 1);
+  toggleExpand(listingId: string) {
+    if (this.expandedId === listingId) {
+      this.expandedId = null;
+      return;
+    }
+
+    this.expandedId = listingId;
+
+    // Load skills for this listing if not already loaded
+    if (!this.listingSkills[listingId]) {
+      this.listingService.getSkillsByListing(listingId).subscribe({
+        next: (res: any) => {
+          this.listingSkills[listingId] = res.skills;
+        },
+        error: () => {
+          this.listingSkills[listingId] = [];
+        }
+      });
+    }
   }
 
-  toggleExpand(index: number) {
-    this.expandedIndex = this.expandedIndex === index ? null : index;
+  togglePublish(listing: any) {
+    this.listingService.updateListing(listing._id, {
+      isPublished: !listing.isPublished
+    }).subscribe({
+      next: () => {
+        listing.isPublished = !listing.isPublished;
+        this.showToast(`Listing ${listing.isPublished ? 'published' : 'unpublished'}.`);
+      },
+      error: () => {
+        this.showToast('Failed to update listing status.', true);
+      }
+    });
+  }
+
+  removeListing(listingId: string) {
+    this.listingService.deleteListing(listingId).subscribe({
+      next: () => {
+        this.listings = this.listings.filter(l => l._id !== listingId);
+        this.showToast('Listing removed.');
+      },
+      error: () => {
+        this.showToast('Failed to remove listing.', true);
+      }
+    });
   }
 
   resetForm() {
     this.newTitle = '';
+    this.newDescription = '';
     this.newThreshold = 70;
-    this.newStatus = 'Published';
+    this.newIsPublished = true;
     this.assignedSkills = [];
     this.selectedSkill = '';
+    this.selectedWeight = 3;
+    this.selectedTarget = 3;
   }
 
   showToast(message: string, isError = false) {

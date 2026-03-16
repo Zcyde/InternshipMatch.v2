@@ -1,201 +1,136 @@
-.skill-input-page {
+.skill-input-wrapper {
   max-width: 700px;
-  margin: 0 auto;
+  margin: 40px auto;
+  padding: 0 24px;
 }
 
-.page-header {
-  margin-bottom: 1.5rem;
-}
-
-.back-btn {
+.btn-back {
   background: none;
   border: none;
-  font-size: 13px;
-  color: #888;
+  color: #9b1c1c;
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
   padding: 0;
-  margin-bottom: 0.75rem;
-  display: block;
+  margin-bottom: 32px;
 }
 
-.back-btn:hover {
-  color: #111;
+.skill-header {
+  margin-bottom: 36px;
 }
 
-.page-header h1 {
-  font-size: 22px;
-  font-weight: 600;
-  color: #111;
-  margin: 0 0 4px;
+.skill-header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 8px;
 }
 
-.page-header p {
-  font-size: 14px;
-  color: #888;
-  margin: 0;
+.skill-header p {
+  color: #666;
+  font-size: 0.95rem;
 }
 
-.tab-switcher {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 1.5rem;
-}
-
-.tab-btn {
-  padding: 8px 20px;
-  font-size: 14px;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
-  background: #fff;
-  color: #888;
-  cursor: pointer;
-}
-
-.tab-btn.active {
-  background: #c8292b;
-  color: #fff;
-  border-color: #c8292b;
-  font-weight: 500;
-}
-
-.card {
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.card-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: #111;
-  margin: 0 0 4px;
-}
-
-.card-sub {
-  font-size: 13px;
-  color: #888;
-  margin: 0 0 1.5rem;
-}
-
-.skill-rows {
+.skills-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 16px;
+  margin-bottom: 36px;
 }
 
-.skill-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem;
-  background: #f8f8f8;
-  border-radius: 8px;
+.skill-item {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+  padding: 20px 24px;
 }
 
 .skill-info {
   display: flex;
-  flex-direction: column;
-  gap: 3px;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
 }
 
 .skill-name {
-  font-size: 14px;
-  font-weight: 500;
-  color: #111;
+  font-weight: 600;
+  color: #1a1a1a;
+  font-size: 0.95rem;
 }
 
 .skill-level-label {
-  font-size: 12px;
-  color: #c8292b;
-  font-weight: 500;
-}
-
-.skill-level-label.unset {
-  color: #aaa;
+  font-size: 0.8rem;
+  color: #9b1c1c;
+  font-weight: 600;
 }
 
 .proficiency-buttons {
   display: flex;
-  gap: 6px;
+  gap: 8px;
 }
 
 .level-btn {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 8px;
-  border: 1px solid #e0e0e0;
-  background: #fff;
-  font-size: 14px;
-  color: #555;
+  border: 1px solid #e5e5e5;
+  background: #f9f9f9;
+  font-weight: 600;
+  font-size: 0.9rem;
   cursor: pointer;
-  font-weight: 500;
+  transition: all 0.15s ease;
+  color: #666;
 }
 
 .level-btn:hover {
-  background: #f0f0f0;
+  border-color: #9b1c1c;
+  color: #9b1c1c;
 }
 
-.level-btn.selected {
-  background: #c8292b;
+.level-btn.active {
+  background: #9b1c1c;
+  border-color: #9b1c1c;
   color: #fff;
-  border-color: #c8292b;
 }
 
-.upload-area {
-  margin-bottom: 1rem;
-}
-
-.upload-label {
-  display: block;
-  border: 2px dashed #e0e0e0;
-  border-radius: 12px;
-  padding: 2.5rem;
+.submit-section {
   text-align: center;
-  font-size: 14px;
-  color: #888;
-  cursor: pointer;
-  transition: border-color 0.2s;
+  padding-top: 12px;
 }
 
-.upload-label:hover {
-  border-color: #c8292b;
-  color: #c8292b;
-}
-
-.parsing-state {
-  text-align: center;
-  font-size: 14px;
-  color: #888;
-  padding: 1rem;
-}
-
-.parsed-notice {
-  font-size: 13px;
-  color: #3b6d11;
-  background: #eaf3de;
-  border-radius: 8px;
-  padding: 10px 14px;
-  margin-bottom: 1rem;
-}
-
-.page-footer {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.btn-submit {
-  padding: 12px 28px;
-  font-size: 15px;
-  font-weight: 500;
-  background: #c8292b;
+.btn-compute {
+  background: #9b1c1c;
   color: #fff;
   border: none;
-  border-radius: 10px;
+  padding: 14px 40px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.2s ease;
 }
 
-.btn-submit:hover {
-  background: #a82224;
+.btn-compute:hover:not(:disabled) {
+  background: #7f1515;
+}
+
+.btn-compute:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.submit-note {
+  margin-top: 12px;
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.loading, .error-message {
+  text-align: center;
+  padding: 40px 0;
+  color: #666;
+}
+
+.error-message {
+  color: #9b1c1c;
 }

@@ -1,77 +1,70 @@
-<div class="result-page">
+<div class="result-wrapper">
 
-  <div class="page-header">
-    <button class="back-btn" (click)="goBack()">← Back to listings</button>
-    <h1 *ngIf="listing">{{ listing.title }}</h1>
-    <p>Your compatibility assessment result</p>
-  </div>
+  <button class="btn-back" (click)="goBack()">← Back to roles</button>
 
-  <!-- Score Card -->
-  <div class="score-card" *ngIf="listing">
-    <div class="score-circle" [class.passed]="passed" [class.failed]="!passed">
-      <span class="score-number">{{ score }}</span>
-      <span class="score-pct">%</span>
+  <div *ngIf="result">
+
+    <!-- Score section -->
+    <div class="score-section" [class.ready]="result.isReady" [class.not-ready]="!result.isReady">
+      <h1 class="listing-title">{{ result.listingTitle }}</h1>
+
+      <div class="score-circle">
+        <span class="score-number">{{ result.score }}%</span>
+        <span class="score-label">Compatibility</span>
+      </div>
+
+      <div class="status-badge" [class.badge-ready]="result.isReady" [class.badge-not-ready]="!result.isReady">
+        {{ result.isReady ? '✅ Ready to Apply' : '❌ Not Yet Ready' }}
+      </div>
+
+      <p class="threshold-note">Minimum required score: {{ result.threshold }}%</p>
     </div>
 
-    <div class="score-info">
-      <span class="verdict-badge" [class.badge-pass]="passed" [class.badge-fail]="!passed">
-        {{ passed ? 'Internship Ready' : 'Not Yet Ready' }}
-      </span>
-      <h2 *ngIf="passed">You meet the requirements for this role!</h2>
-      <h2 *ngIf="!passed">You need {{ listing.threshold }}% to qualify. Keep working!</h2>
-      <p>{{ matchedSkills.length }} of {{ listing.skills.length }} required skills met</p>
-    </div>
-  </div>
-
-  <!-- PASSED STATE -->
-  <ng-container *ngIf="passed">
-    <div class="card">
-      <h2 class="card-title">Matched skills</h2>
-      <div class="skill-tags">
-        <span class="skill-tag match" *ngFor="let skill of matchedSkills">
-          ✓ {{ skill }}
-        </span>
+    <!-- Matched skills -->
+    <div class="section" *ngIf="result.matchedSkills.length > 0">
+      <h2>✅ Matched Skills</h2>
+      <div class="skill-row" *ngFor="let skill of result.matchedSkills">
+        <div class="skill-row-info">
+          <span class="skill-row-name">{{ skill.name }}</span>
+          <span class="skill-row-levels">
+            Your level: <strong>{{ skill.studentLevel }}</strong> /
+            Required: <strong>{{ skill.targetLevel }}</strong>
+          </span>
+        </div>
+        <div class="contribution-bar-wrapper">
+          <div class="contribution-bar" [style.width.%]="skill.contribution"></div>
+        </div>
+        <span class="contribution-label">+{{ skill.contribution }}%</span>
       </div>
     </div>
 
-    <div class="action-footer">
-      <button class="btn-pdf" (click)="exportPDF()">
-        Download Results as PDF
+    <!-- Missing skills -->
+    <div class="section" *ngIf="result.missingSkills.length > 0">
+      <h2>❌ Missing Skills</h2>
+      <div class="missing-row" *ngFor="let skill of result.missingSkills">
+        <span class="skill-row-name">{{ skill.name }}</span>
+        <span class="missing-target">Target level: {{ skill.targetLevel }}</span>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button class="btn-roadmap" *ngIf="!result.isReady" (click)="goToRoadmap()">
+        View Skill Roadmap →
+      </button>
+      <button class="btn-export" *ngIf="result.isReady" (click)="exportPDF()">
+        Export as PDF
+      </button>
+      <button class="btn-try-another" (click)="goBack()">
+        Try Another Role
       </button>
     </div>
-  </ng-container>
 
-  <!-- FAILED STATE -->
-  <ng-container *ngIf="!passed">
-    <div class="card">
-      <h2 class="card-title">Matched skills</h2>
-      <div class="skill-tags" *ngIf="matchedSkills.length > 0">
-        <span class="skill-tag match" *ngFor="let skill of matchedSkills">
-          ✓ {{ skill }}
-        </span>
-      </div>
-      <p class="empty-hint" *ngIf="matchedSkills.length === 0">
-        No skills matched for this role.
-      </p>
-    </div>
+  </div>
 
-    <div class="card">
-      <h2 class="card-title">Missing skills</h2>
-      <div class="skill-tags" *ngIf="missingSkills.length > 0">
-        <span class="skill-tag missing" *ngFor="let skill of missingSkills">
-          ✕ {{ skill }}
-        </span>
-      </div>
-      <p class="empty-hint" *ngIf="missingSkills.length === 0">
-        No completely missing skills — you just need to improve some levels.
-      </p>
-    </div>
-
-    <div class="action-footer">
-      <button class="btn-roadmap" (click)="goToRoadmap()">
-        View my skill roadmap →
-      </button>
-    </div>
-  </ng-container>
+  <!-- No result fallback -->
+  <div class="no-result" *ngIf="!result">
+    <p>No result found. Please go back and assess a role first.</p>
+  </div>
 
 </div>

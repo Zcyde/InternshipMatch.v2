@@ -1,0 +1,96 @@
+.role-selection-wrapper {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 0 24px;
+}
+
+.role-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.role-header h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.role-header p {
+  font-size: 1rem;
+  color: #666;
+}
+
+.roles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.role-card {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 28px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.role-card:hover {
+  border-color: #9b1c1c;
+  box-shadow: 0 4px 20px rgba(155, 28, 28, 0.12);
+  transform: translateY(-2px);
+}
+
+.role-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.role-card-header h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 0;
+  flex: 1;
+  padding-right: 12px;
+}
+
+.threshold-badge {
+  background: #fff5f5;
+  color: #9b1c1c;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.role-description {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.role-card-footer {
+  margin-top: 20px;
+}
+
+.select-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #9b1c1c;
+}
+
+.loading, .error, .empty {
+  text-align: center;
+  padding: 60px 0;
+  color: #666;
+}
+
+.error {
+  color: #9b1c1c;
+}

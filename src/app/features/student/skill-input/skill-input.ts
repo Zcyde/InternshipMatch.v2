@@ -2,25 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-
-interface Skill {
-  name: string;
-  weight: number;
-  targetLevel: number;
-}
-
-interface Listing {
-  id: number;
-  title: string;
-  threshold: number;
-  skills: Skill[];
-}
-
-interface StudentSkill {
-  skillId: string;
-  name: string;
-  proficiencyLevel: number;
-}
+import { ListingService } from '../../../listing.service';
+import { MatchService, StudentSkill } from '../../../match.service';
+import { AuthService } from '../../../auth.service';
 
 @Component({
   selector: 'app-skill-input',
@@ -31,62 +15,50 @@ interface StudentSkill {
 })
 export class SkillInput implements OnInit {
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
-
-  roleId: number = 0;
-  listing: Listing | null = null;
+  listingId: string = '';
+  listingTitle: string = '';
+  skills: any[] = [];
   studentSkills: StudentSkill[] = [];
-  activeTab: 'manual' | 'resume' = 'manual';
-  resumeFileName = '';
-  resumeParsed = false;
-  resumeParsing = false;
+  isLoading = true;
+  isComputing = false;
+  errorMessage = '';
 
-  // Same listings data — in a real app this comes from a service
-  listings: Listing[] = [
-    {
-      id: 1,
-      title: 'Frontend Developer Intern',
-      threshold: 70,
-      skills: [
-        { name: 'Angular', weight: 5, targetLevel: 4 },
-        { name: 'TypeScript', weight: 3, targetLevel: 3 },
-        { name: 'REST APIs', weight: 2, targetLevel: 3 }
-      ]
-    },
-    {
-      id: 2,
-      title: 'Backend Developer Intern',
-      threshold: 65,
-      skills: [
-        { name: 'Node.js', weight: 4, targetLevel: 3 },
-        { name: 'SQL', weight: 3, targetLevel: 3 },
-        { name: 'REST APIs', weight: 3, targetLevel: 2 },
-        { name: 'Git & Version Control', weight: 2, targetLevel: 2 }
-      ]
-    },
-    {
-      id: 3,
-      title: 'UI/UX Design Intern',
-      threshold: 60,
-      skills: [
-        { name: 'Figma / UI Design', weight: 5, targetLevel: 4 },
-        { name: 'CSS / Tailwind', weight: 3, targetLevel: 3 }
-      ]
-    }
-  ];
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private listingService: ListingService,
+    private matchService: MatchService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
-    this.roleId = Number(this.route.snapshot.paramMap.get('roleId'));
-    this.listing = this.listings.find(l => l.id === this.roleId) || null;
+    this.listingId = this.route.snapshot.paramMap.get('roleId') || '';
 
-    // Pre-populate student skills with 0 proficiency for each required skill
-    if (this.listing) {
-      this.studentSkills = this.listing.skills.map(s => ({
-        skillId: s.name,
-        name: s.name,
-        proficiencyLevel: 0
-      }));
-    }
+    // Load listing title
+    this.listingService.getListing(this.listingId).subscribe({
+      next: (res: any) => {
+        this.listingTitle = res.listing.title;
+      },
+      error: () => {
+        this.errorMessage = 'Failed to load listing.';
+      }
+    });
+
+    // Load skills for this listing
+    this.listingService.getSkillsByListing(this.listingId).subscribe({
+      next: (res: any) => {
+        this.skills = res.skills;
+        this.studentSkills = res.skills.map((s: any) => ({
+          name: s.name,
+          proficiencyLevel: 0
+        }));
+        this.isLoading = false;
+      },
+      error: () => {
+        this.errorMessage = 'Failed to load skills.';
+        this.isLoading = false;
+      }
+    });
   }
 
   proficiencyLabel(level: number): string {
@@ -100,33 +72,39 @@ export class SkillInput implements OnInit {
     }
   }
 
-  onResumeUpload(event: any) {
-    const file = event.target.files[0];
-    if (!file) return;
-    this.resumeFileName = file.name;
-    this.resumeParsing = true;
-    this.resumeParsed = false;
-
-    // Simulate resume parsing delay
-    setTimeout(() => {
-      this.resumeParsing = false;
-      this.resumeParsed = true;
-      // Simulate parsed skills — in real app this calls backend
-      this.studentSkills = this.studentSkills.map(s => ({
-        ...s,
-        proficiencyLevel: Math.floor(Math.random() * 3) + 1
-      }));
-    }, 2000);
+  getProficiencyForSkill(skillName: string): number {
+    return this.studentSkills.find(s => s.name === skillName)?.proficiencyLevel || 0;
   }
 
-  calculateAndNavigate() {
-    // Store skills in sessionStorage to pass to result page
-    sessionStorage.setItem('studentSkills', JSON.stringify(this.studentSkills));
-    sessionStorage.setItem('listingId', String(this.roleId));
-    this.router.navigate(['/student/result', this.roleId]);
+  setProficiency(skillName: string, level: number) {
+    const skill = this.studentSkills.find(s => s.name === skillName);
+    if (skill) skill.proficiencyLevel = level;
+  }
+
+  computeMatch() {
+    const studentId = this.authService.getUserId();
+    if (!studentId) {
+      this.errorMessage = 'Session expired. Please log in again.';
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    this.isComputing = true;
+
+    this.matchService.computeMatch(studentId, this.listingId, this.studentSkills)
+      .subscribe({
+        next: (res: any) => {
+          sessionStorage.setItem('matchResult', JSON.stringify(res.result));
+          this.router.navigate(['/student/result', this.listingId]);
+        },
+        error: () => {
+          this.errorMessage = 'Failed to compute match. Please try again.';
+          this.isComputing = false;
+        }
+      });
   }
 
   goBack() {
-    this.router.navigate(['/student/listings']);
+    this.router.navigate(['/student/role-selection']);
   }
 }

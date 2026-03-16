@@ -1,99 +1,54 @@
-<div class="skill-input-page">
+<div class="skill-input-wrapper">
 
-  <div class="page-header">
-    <button class="back-btn" (click)="goBack()">← Back to listings</button>
-    <div *ngIf="listing">
-      <h1>{{ listing.title }}</h1>
-      <p>Input your skills to assess your compatibility for this role</p>
-    </div>
+  <button class="btn-back" (click)="goBack()">← Back to roles</button>
+
+  <div class="skill-header">
+    <h1>{{ listingTitle }}</h1>
+    <p>Rate your proficiency for each required skill</p>
   </div>
 
-  <!-- Tab Switcher -->
-  <div class="tab-switcher">
-    <button class="tab-btn" [class.active]="activeTab === 'manual'"
-            (click)="activeTab = 'manual'">
-      Manual Input
-    </button>
-    <button class="tab-btn" [class.active]="activeTab === 'resume'"
-            (click)="activeTab = 'resume'">
-      Upload Resume
-    </button>
+  <!-- Loading state -->
+  <div class="loading" *ngIf="isLoading">
+    <p>Loading skills...</p>
   </div>
 
-  <!-- MANUAL INPUT TAB -->
-  <div class="card" *ngIf="activeTab === 'manual'">
-    <h2 class="card-title">Set your proficiency level for each required skill</h2>
-    <p class="card-sub">1 = Beginner, 5 = Expert</p>
+  <!-- Error state -->
+  <div class="error-message" *ngIf="errorMessage">
+    <p>{{ errorMessage }}</p>
+  </div>
 
-    <div class="skill-rows">
-      <div class="skill-row" *ngFor="let skill of studentSkills">
-        <div class="skill-info">
-          <span class="skill-name">{{ skill.name }}</span>
-          <span class="skill-level-label" [class.unset]="skill.proficiencyLevel === 0">
-            {{ proficiencyLabel(skill.proficiencyLevel) }}
-          </span>
-        </div>
-        <div class="proficiency-buttons">
-          <button
-            *ngFor="let level of [1, 2, 3, 4, 5]"
-            class="level-btn"
-            [class.selected]="skill.proficiencyLevel === level"
-            (click)="skill.proficiencyLevel = level">
-            {{ level }}
-          </button>
-        </div>
+  <!-- Skills list -->
+  <div class="skills-list" *ngIf="!isLoading && skills.length > 0">
+    <div class="skill-item" *ngFor="let skill of skills">
+
+      <div class="skill-info">
+        <span class="skill-name">{{ skill.name }}</span>
+        <span class="skill-level-label">
+          {{ proficiencyLabel(getProficiencyForSkill(skill.name)) }}
+        </span>
       </div>
-    </div>
-  </div>
 
-  <!-- RESUME UPLOAD TAB -->
-  <div class="card" *ngIf="activeTab === 'resume'">
-    <h2 class="card-title">Upload your resume</h2>
-    <p class="card-sub">Accepted formats: PDF or DOCX. The system will attempt to extract your skills automatically.</p>
-
-    <div class="upload-area">
-      <input type="file" id="resume-upload" accept=".pdf,.docx"
-             (change)="onResumeUpload($event)" style="display:none"/>
-      <label for="resume-upload" class="upload-label">
-        <span *ngIf="!resumeFileName">Click to upload your resume</span>
-        <span *ngIf="resumeFileName">{{ resumeFileName }}</span>
-      </label>
-    </div>
-
-    <div class="parsing-state" *ngIf="resumeParsing">
-      <p>Parsing your resume...</p>
-    </div>
-
-    <div class="parsed-result" *ngIf="resumeParsed">
-      <p class="parsed-notice">
-        Skills have been extracted. Please review and adjust your proficiency levels before proceeding.
-      </p>
-      <div class="skill-rows">
-        <div class="skill-row" *ngFor="let skill of studentSkills">
-          <div class="skill-info">
-            <span class="skill-name">{{ skill.name }}</span>
-            <span class="skill-level-label" [class.unset]="skill.proficiencyLevel === 0">
-              {{ proficiencyLabel(skill.proficiencyLevel) }}
-            </span>
-          </div>
-          <div class="proficiency-buttons">
-            <button
-              *ngFor="let level of [1, 2, 3, 4, 5]"
-              class="level-btn"
-              [class.selected]="skill.proficiencyLevel === level"
-              (click)="skill.proficiencyLevel = level">
-              {{ level }}
-            </button>
-          </div>
-        </div>
+      <div class="proficiency-buttons">
+        <button
+          *ngFor="let level of [1,2,3,4,5]"
+          class="level-btn"
+          [class.active]="getProficiencyForSkill(skill.name) === level"
+          (click)="setProficiency(skill.name, level)">
+          {{ level }}
+        </button>
       </div>
+
     </div>
   </div>
 
-  <div class="page-footer">
-    <button class="btn-submit" (click)="calculateAndNavigate()">
-      Calculate my compatibility →
+  <div class="submit-section" *ngIf="!isLoading">
+    <button
+      class="btn-compute"
+      (click)="computeMatch()"
+      [disabled]="isComputing">
+      {{ isComputing ? 'Computing...' : 'Check my compatibility →' }}
     </button>
+    <p class="submit-note">Skills with no rating selected will be treated as missing</p>
   </div>
 
 </div>

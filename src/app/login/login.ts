@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +16,7 @@ export class Login {
   errorMessage: string = '';
   isSignupMode: boolean = false;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   onLogin() {
     if (!this.loginData.username || !this.loginData.password) {
@@ -24,11 +24,11 @@ export class Login {
       return;
     }
 
-    this.http.post('http://localhost:3000/api/login', this.loginData)
+    this.authService.login(this.loginData.username, this.loginData.password)
       .subscribe({
         next: (res: any) => {
           if (res.status === 'success') {
-            localStorage.setItem('userRole', res.role);
+            this.authService.saveSession(res.role, res.userId || 'admin');
             if (res.role === 'admin') {
               this.router.navigate(['/admin']);
             } else {
@@ -48,7 +48,7 @@ export class Login {
       return;
     }
 
-    this.http.post('http://localhost:3000/api/register', this.loginData)
+    this.authService.register(this.loginData.username, this.loginData.password)
       .subscribe({
         next: (res: any) => {
           alert(res.message || 'Registration successful! You can now log in.');

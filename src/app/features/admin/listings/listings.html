@@ -16,17 +16,23 @@
     <div class="form-grid">
       <div class="form-group">
         <label>Role title</label>
-        <input type="text" [(ngModel)]="newTitle" placeholder="e.g. Frontend Developer Intern"/>
+        <input type="text" [(ngModel)]="newTitle"
+               placeholder="e.g. Frontend Developer Intern"/>
+      </div>
+      <div class="form-group">
+        <label>Description (optional)</label>
+        <input type="text" [(ngModel)]="newDescription"
+               placeholder="Brief description of the role"/>
       </div>
       <div class="form-group">
         <label>Compatibility threshold (%)</label>
         <input type="number" [(ngModel)]="newThreshold" min="0" max="100"/>
       </div>
       <div class="form-group">
-        <label>Status</label>
-        <select [(ngModel)]="newStatus">
-          <option>Published</option>
-          <option>Draft</option>
+        <label>Publish immediately?</label>
+        <select [(ngModel)]="newIsPublished">
+          <option [ngValue]="true">Yes — visible to students</option>
+          <option [ngValue]="false">No — save as draft</option>
         </select>
       </div>
     </div>
@@ -43,22 +49,27 @@
         </select>
       </div>
       <div class="form-group">
-        <label>Weight (1–5)</label>
-        <input type="number" [(ngModel)]="selectedWeight" min="1" max="5"/>
+        <label>Weight (1–10)</label>
+        <input type="number" [(ngModel)]="selectedWeight" min="1" max="10"/>
       </div>
       <div class="form-group">
         <label>Target level (1–5)</label>
         <input type="number" [(ngModel)]="selectedTarget" min="1" max="5"/>
       </div>
-      <button class="btn btn-primary assign-btn" (click)="addSkillToListing()">Add</button>
+      <button class="btn btn-primary assign-btn" (click)="addSkillToListing()">
+        Add
+      </button>
     </div>
 
-    <!-- Assigned Skills -->
+    <!-- Assigned Skills Preview -->
     <div class="assigned-skills" *ngIf="assignedSkills.length > 0">
-      <div class="assigned-skill-tag" *ngFor="let skill of assignedSkills; let i = index">
+      <div class="assigned-skill-tag"
+           *ngFor="let skill of assignedSkills; let i = index">
         <div class="skill-info">
           <span class="skill-name">{{ skill.name }}</span>
-          <span class="skill-meta">Weight: {{ skill.weight }} | Target: {{ skill.targetLevel }} / 5</span>
+          <span class="skill-meta">
+            Weight: {{ skill.weight }} | Target: {{ skill.targetLevel }} / 5
+          </span>
         </div>
         <button class="remove-btn" (click)="removeAssignedSkill(i)">✕</button>
       </div>
@@ -69,58 +80,82 @@
 
     <div class="form-footer">
       <button class="btn" (click)="resetForm()">Clear</button>
-      <button class="btn btn-primary" (click)="saveListing()">Save listing</button>
+      <button class="btn btn-primary" (click)="saveListing()" [disabled]="isSaving">
+        {{ isSaving ? 'Saving...' : 'Save listing' }}
+      </button>
     </div>
   </div>
 
   <!-- Listings Table -->
   <div class="card">
     <h2 class="card-title">All listings</h2>
-    <table>
+
+    <div class="loading-hint" *ngIf="isLoading">Loading listings...</div>
+
+    <table *ngIf="!isLoading">
       <thead>
         <tr>
           <th>Role</th>
           <th>Threshold</th>
-          <th>Skills</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
-        <ng-container *ngFor="let listing of listings; let i = index">
+        <ng-container *ngFor="let listing of listings">
           <tr>
             <td>{{ listing.title }}</td>
             <td>{{ listing.threshold }}%</td>
-            <td>{{ listing.skills.length }} skill(s)</td>
             <td>
-              <span class="badge" [class.badge-published]="listing.status === 'Published'"
-                                  [class.badge-draft]="listing.status === 'Draft'">
-                {{ listing.status }}
+              <span class="badge"
+                    [class.badge-published]="listing.isPublished"
+                    [class.badge-draft]="!listing.isPublished">
+                {{ listing.isPublished ? 'Published' : 'Draft' }}
               </span>
             </td>
             <td>
               <div class="actions">
-                <button class="btn btn-sm" (click)="toggleExpand(i)">
-                  {{ expandedIndex === i ? 'Hide' : 'View' }} Skills
+                <button class="btn btn-sm" (click)="toggleExpand(listing._id)">
+                  {{ expandedId === listing._id ? 'Hide' : 'View' }} Skills
                 </button>
-                <button class="btn btn-sm btn-danger" (click)="removeListing(i)">Remove</button>
+                <button class="btn btn-sm"
+                        (click)="togglePublish(listing)">
+                  {{ listing.isPublished ? 'Unpublish' : 'Publish' }}
+                </button>
+                <button class="btn btn-sm btn-danger"
+                        (click)="removeListing(listing._id)">
+                  Remove
+                </button>
               </div>
             </td>
           </tr>
+
           <!-- Expanded Skills Row -->
-          <tr *ngIf="expandedIndex === i">
-            <td colspan="5">
+          <tr *ngIf="expandedId === listing._id">
+            <td colspan="4">
               <div class="expanded-skills">
-                <div class="expanded-skill-item" *ngFor="let skill of listing.skills">
+                <div class="expanded-skill-item"
+                     *ngFor="let skill of listingSkills[listing._id]">
                   <span class="skill-name">{{ skill.name }}</span>
-                  <span class="skill-meta">Weight: {{ skill.weight }} | Target: {{ skill.targetLevel }} / 5</span>
+                  <span class="skill-meta">
+                    Weight: {{ skill.weight }} | Target: {{ skill.targetLevel }} / 5
+                  </span>
                 </div>
+                <p *ngIf="!listingSkills[listing._id]">Loading skills...</p>
+                <p *ngIf="listingSkills[listing._id]?.length === 0">
+                  No skills assigned.
+                </p>
               </div>
             </td>
           </tr>
         </ng-container>
       </tbody>
     </table>
+
+    <p class="empty-hint"
+       *ngIf="!isLoading && listings.length === 0">
+      No listings yet. Create one above.
+    </p>
   </div>
 
 </div>
