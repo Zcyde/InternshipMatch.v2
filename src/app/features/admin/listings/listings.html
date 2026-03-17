@@ -92,7 +92,7 @@
 
     <div class="loading-hint" *ngIf="isLoading">Loading listings...</div>
 
-    <table *ngIf="!isLoading">
+    <table *ngIf="!isLoading && listings.length > 0">
       <thead>
         <tr>
           <th>Role</th>

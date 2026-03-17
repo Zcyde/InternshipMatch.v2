@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ListingService } from '../../../listing.service';
@@ -42,17 +42,19 @@ export class Skills implements OnInit {
   toastVisible = false;
   toastError = false;
 
-  constructor(private listingService: ListingService) {}
+  constructor(private listingService: ListingService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.listingService.getAllListings().subscribe({
       next: (res: any) => {
         this.listings = res.listings;
         this.isLoadingListings = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.showToast('Failed to load listings.', true);
         this.isLoadingListings = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -66,10 +68,12 @@ export class Skills implements OnInit {
       next: (res: any) => {
         this.skills = res.skills;
         this.isLoadingSkills = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.showToast('Failed to load skills.', true);
         this.isLoadingSkills = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -101,10 +105,12 @@ export class Skills implements OnInit {
         this.showToast(`"${this.newName}" added successfully.`);
         this.resetForm();
         this.isSaving = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.showToast('Failed to add skill.', true);
         this.isSaving = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -127,9 +133,11 @@ export class Skills implements OnInit {
         if (index !== -1) this.skills[index] = res.skill;
         this.editingSkillId = null;
         this.showToast('Skill updated.');
+        this.cdr.detectChanges();
       },
       error: () => {
         this.showToast('Failed to update skill.', true);
+        this.cdr.detectChanges();
       }
     });
   }
@@ -143,9 +151,11 @@ export class Skills implements OnInit {
       next: () => {
         this.skills = this.skills.filter(s => s._id !== skillId);
         this.showToast('Skill removed.');
+        this.cdr.detectChanges();
       },
       error: () => {
         this.showToast('Failed to remove skill.', true);
+        this.cdr.detectChanges();
       }
     });
   }
@@ -171,6 +181,10 @@ export class Skills implements OnInit {
     this.toastMessage = message;
     this.toastError = isError;
     this.toastVisible = true;
-    setTimeout(() => this.toastVisible = false, 3000);
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      this.toastVisible = false;
+      this.cdr.detectChanges();
+    }, 3000);
   }
 }

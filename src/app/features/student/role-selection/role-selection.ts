@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ListingService } from '../../../listing.service';
@@ -18,7 +18,8 @@ export class RoleSelection implements OnInit {
 
   constructor(
     private listingService: ListingService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -26,10 +27,12 @@ export class RoleSelection implements OnInit {
       next: (res: any) => {
         this.listings = res.listings;
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         this.errorMessage = 'Failed to load roles. Please try again.';
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -28,7 +28,8 @@ export class SkillInput implements OnInit {
     private router: Router,
     private listingService: ListingService,
     private matchService: MatchService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -38,9 +39,11 @@ export class SkillInput implements OnInit {
     this.listingService.getListing(this.listingId).subscribe({
       next: (res: any) => {
         this.listingTitle = res.listing.title;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.errorMessage = 'Failed to load listing.';
+        this.cdr.detectChanges();
       }
     });
 
@@ -53,10 +56,12 @@ export class SkillInput implements OnInit {
           proficiencyLevel: 0
         }));
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.errorMessage = 'Failed to load skills.';
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -78,7 +83,10 @@ export class SkillInput implements OnInit {
 
   setProficiency(skillName: string, level: number) {
     const skill = this.studentSkills.find(s => s.name === skillName);
-    if (skill) skill.proficiencyLevel = level;
+    if (skill) {
+      skill.proficiencyLevel = level;
+      this.cdr.detectChanges();
+    }
   }
 
   computeMatch() {
@@ -100,6 +108,7 @@ export class SkillInput implements OnInit {
         error: () => {
           this.errorMessage = 'Failed to compute match. Please try again.';
           this.isComputing = false;
+          this.cdr.detectChanges();
         }
       });
   }

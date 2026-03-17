@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ListingService } from '../../../listing.service';
@@ -20,7 +20,7 @@ export class Dashboard implements OnInit {
 
   isLoading = true;
 
-  constructor(private listingService: ListingService) {}
+  constructor(private listingService: ListingService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
     // Fetch all listings
@@ -48,6 +48,7 @@ export class Dashboard implements OnInit {
               if (completed === listings.length) {
                 this.stats[2].value = totalSkills;
                 this.isLoading = false;
+                this.cdr.detectChanges();
               }
             },
             error: () => {
@@ -55,6 +56,7 @@ export class Dashboard implements OnInit {
               if (completed === listings.length) {
                 this.stats[2].value = totalSkills;
                 this.isLoading = false;
+                this.cdr.detectChanges();
               }
             }
           });

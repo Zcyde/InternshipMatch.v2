@@ -1,7 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const dns = require('dns');
 require('dotenv').config();
+
+// Fix for MongoDB IPv6 SRV connection issues (common on some ISPs like Jio)
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 const app = express();
 

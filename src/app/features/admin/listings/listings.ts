@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { forkJoin } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ListingService } from '../../../listing.service';
@@ -57,7 +58,11 @@ export class Listings implements OnInit {
   isSaving = false;
   isLoading = true;
 
-  constructor(private listingService: ListingService) {}
+  constructor(private listingService: ListingService, private cdr: ChangeDetectorRef) {}
+
+  getPublishedCount(): number {
+    return this.listings.filter(l => l.isPublished).length;
+  }
 
   ngOnInit() {
     this.loadListings();
@@ -68,10 +73,12 @@ export class Listings implements OnInit {
       next: (res: any) => {
         this.listings = res.listings;
         this.isLoading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.showToast('Failed to load listings.', true);
         this.isLoading = false;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -128,18 +135,21 @@ export class Listings implements OnInit {
             listing: listingId,
             weight: skill.weight,
             targetLevel: skill.targetLevel
-          }).toPromise()
+          })
         );
 
-        Promise.all(skillSaves).then(() => {
-          this.showToast(`"${this.newTitle}" saved successfully.`);
-          this.resetForm();
-          this.loadListings();
-          this.isSaving = false;
-        }).catch(() => {
-          this.showToast('Listing saved but some skills failed.', true);
-          this.loadListings();
-          this.isSaving = false;
+        forkJoin(skillSaves).subscribe({
+          next: () => {
+            this.showToast(`"${this.newTitle}" saved successfully.`);
+            this.resetForm();
+            this.loadListings();
+            this.isSaving = false;
+          },
+          error: () => {
+            this.showToast('Listing saved but some skills failed.', true);
+            this.loadListings();
+            this.isSaving = false;
+          }
         });
       },
       error: () => {
@@ -162,9 +172,11 @@ export class Listings implements OnInit {
       this.listingService.getSkillsByListing(listingId).subscribe({
         next: (res: any) => {
           this.listingSkills[listingId] = res.skills;
+          this.cdr.detectChanges();
         },
         error: () => {
           this.listingSkills[listingId] = [];
+          this.cdr.detectChanges();
         }
       });
     }
@@ -177,6 +189,7 @@ export class Listings implements OnInit {
       next: () => {
         listing.isPublished = !listing.isPublished;
         this.showToast(`Listing ${listing.isPublished ? 'published' : 'unpublished'}.`);
+        this.cdr.detectChanges();
       },
       error: () => {
         this.showToast('Failed to update listing status.', true);
@@ -189,6 +202,7 @@ export class Listings implements OnInit {
       next: () => {
         this.listings = this.listings.filter(l => l._id !== listingId);
         this.showToast('Listing removed.');
+        this.cdr.detectChanges();
       },
       error: () => {
         this.showToast('Failed to remove listing.', true);
@@ -211,6 +225,10 @@ export class Listings implements OnInit {
     this.toastMessage = message;
     this.toastError = isError;
     this.toastVisible = true;
-    setTimeout(() => this.toastVisible = false, 3000);
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      this.toastVisible = false;
+      this.cdr.detectChanges();
+    }, 3000);
   }
 }

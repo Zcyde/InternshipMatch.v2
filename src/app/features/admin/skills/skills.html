@@ -13,7 +13,9 @@
   <!-- Select Listing -->
   <div class="card">
     <h2 class="card-title">Select a listing to manage its skills</h2>
-    <div class="form-group">
+    <p class="loading-hint" *ngIf="isLoadingListings">Loading listings...</p>
+    
+    <div class="form-group" *ngIf="!isLoadingListings">
       <label>Listing</label>
       <select [(ngModel)]="selectedListingId" (change)="onListingSelect()">
         <option value="">-- Select a listing --</option>
@@ -22,7 +24,6 @@
         </option>
       </select>
     </div>
-    <p class="loading-hint" *ngIf="isLoadingListings">Loading listings...</p>
   </div>
 
   <!-- Add Skill Form -->
