@@ -16,13 +16,13 @@ router.get('/:listingId', async (req, res) => {
 // ================= CREATE SKILL (Admin) =================
 router.post('/', async (req, res) => {
   try {
-    const { name, listing, weight, targetLevel } = req.body;
+    const { name, listing, weight, targetLevel, resources } = req.body;
 
     if (!name || !listing || !weight || !targetLevel) {
       return res.status(400).json({ status: "error", message: "All fields are required" });
     }
 
-    const newSkill = new Skill({ name, listing, weight, targetLevel });
+    const newSkill = new Skill({ name, listing, weight, targetLevel, resources });
     await newSkill.save();
 
     return res.status(201).json({ status: "success", skill: newSkill });
@@ -35,11 +35,11 @@ router.post('/', async (req, res) => {
 // ================= UPDATE SKILL (Admin) =================
 router.put('/:id', async (req, res) => {
   try {
-    const { name, weight, targetLevel } = req.body;
+    const { name, weight, targetLevel, resources } = req.body;
 
     const updated = await Skill.findByIdAndUpdate(
       req.params.id,
-      { name, weight, targetLevel },
+      { name, weight, targetLevel, resources },
       { new: true, runValidators: true }
     );
 

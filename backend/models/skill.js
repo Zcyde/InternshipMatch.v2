@@ -22,7 +22,11 @@ const skillSchema = new mongoose.Schema({
     required: true,
     min: 1,
     max: 5
-  }
+  },
+  resources: [{
+    label: { type: String, required: true },
+    url: { type: String, required: true }
+  }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('Skill', skillSchema);

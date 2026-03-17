@@ -44,6 +44,19 @@
         <input type="number" [(ngModel)]="newTarget" min="1" max="5"/>
       </div>
     </div>
+
+    <!-- Resources for New Skill -->
+    <div class="resources-section">
+      <div class="section-header">
+        <label>Learning Resources</label>
+        <button class="btn-text" (click)="addResourceField('new')">+ Add resource</button>
+      </div>
+      <div class="resource-inputs" *ngFor="let res of newResources; let i = index">
+        <input type="text" [(ngModel)]="res.label" placeholder="Label (e.g. Documentation)"/>
+        <input type="text" [(ngModel)]="res.url" placeholder="URL"/>
+        <button class="btn-icon" (click)="removeResourceField('new', i)">✕</button>
+      </div>
+    </div>
     <div class="form-footer">
       <button class="btn" (click)="resetForm()">Clear</button>
       <button class="btn btn-primary" (click)="saveSkill()" [disabled]="isSaving">
@@ -86,22 +99,39 @@
 
           <!-- Edit row -->
           <tr *ngIf="editingSkillId === skill._id">
-            <td>
-              <input type="text" [(ngModel)]="editName" class="inline-input"/>
-            </td>
-            <td>
-              <input type="number" [(ngModel)]="editWeight"
-                     min="1" max="10" class="inline-input short"/>
-            </td>
-            <td>
-              <input type="number" [(ngModel)]="editTarget"
-                     min="1" max="5" class="inline-input short"/>
-            </td>
-            <td>
-              <div class="actions">
-                <button class="btn btn-sm btn-primary"
-                        (click)="saveEdit(skill._id)">Save</button>
-                <button class="btn btn-sm" (click)="cancelEdit()">Cancel</button>
+            <td colspan="4" class="edit-panel-cell">
+              <div class="edit-panel">
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label>Skill name</label>
+                    <input type="text" [(ngModel)]="editName"/>
+                  </div>
+                  <div class="form-group">
+                    <label>Weight (1–10)</label>
+                    <input type="number" [(ngModel)]="editWeight" min="1" max="10"/>
+                  </div>
+                  <div class="form-group">
+                    <label>Target level (1–5)</label>
+                    <input type="number" [(ngModel)]="editTarget" min="1" max="5"/>
+                  </div>
+                </div>
+
+                <div class="resources-section">
+                  <div class="section-header">
+                    <label>Learning Resources</label>
+                    <button class="btn-text" (click)="addResourceField('edit')">+ Add resource</button>
+                  </div>
+                  <div class="resource-inputs" *ngFor="let res of editResources; let i = index">
+                    <input type="text" [(ngModel)]="res.label"/>
+                    <input type="text" [(ngModel)]="res.url"/>
+                    <button class="btn-icon" (click)="removeResourceField('edit', i)">✕</button>
+                  </div>
+                </div>
+
+                <div class="edit-footer">
+                  <button class="btn btn-sm" (click)="cancelEdit()">Cancel</button>
+                  <button class="btn btn-sm btn-primary" (click)="saveEdit(skill._id)">Save changes</button>
+                </div>
               </div>
             </td>
           </tr>

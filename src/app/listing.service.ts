@@ -50,7 +50,13 @@ export class ListingService {
   }
 
   // Add skill to a listing
-  addSkill(data: { name: string; listing: string; weight: number; targetLevel: number }) {
+  addSkill(data: {
+    name: string;
+    listing: string;
+    weight: number;
+    targetLevel: number;
+    resources?: { label: string; url: string }[];
+  }) {
     return this.http.post<any>(`${this.apiUrl}/skills`, data);
   }
 

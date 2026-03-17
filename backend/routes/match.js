@@ -37,7 +37,8 @@ router.post('/compute', async (req, res) => {
       if (!student || student.proficiencyLevel === 0) {
         missingSkills.push({
           name: req_skill.name,
-          targetLevel: req_skill.targetLevel
+          targetLevel: req_skill.targetLevel,
+          resources: req_skill.resources || []
         });
       } else {
         const ratio = Math.min(student.proficiencyLevel / req_skill.targetLevel, 1);
@@ -48,7 +49,8 @@ router.post('/compute', async (req, res) => {
           name: req_skill.name,
           studentLevel: student.proficiencyLevel,
           targetLevel: req_skill.targetLevel,
-          contribution: Math.round(contribution)
+          contribution: Math.round(contribution),
+          resources: req_skill.resources || []
         });
       }
     }

@@ -25,12 +25,14 @@ export class Skills implements OnInit {
   newName = '';
   newWeight = 3;
   newTarget = 3;
+  newResources: { label: string; url: string }[] = [];
 
   // Edit mode
   editingSkillId: string | null = null;
   editName = '';
   editWeight = 3;
   editTarget = 3;
+  editResources: { label: string; url: string }[] = [];
 
   // States
   isLoadingListings = true;
@@ -98,7 +100,8 @@ export class Skills implements OnInit {
       name: this.newName.trim(),
       listing: this.selectedListingId,
       weight: this.newWeight,
-      targetLevel: this.newTarget
+      targetLevel: this.newTarget,
+      resources: this.newResources
     }).subscribe({
       next: (res: any) => {
         this.skills.push(res.skill);
@@ -120,13 +123,15 @@ export class Skills implements OnInit {
     this.editName = skill.name;
     this.editWeight = skill.weight;
     this.editTarget = skill.targetLevel;
+    this.editResources = skill.resources ? JSON.parse(JSON.stringify(skill.resources)) : [];
   }
 
   saveEdit(skillId: string) {
     this.listingService.updateSkill(skillId, {
       name: this.editName,
       weight: this.editWeight,
-      targetLevel: this.editTarget
+      targetLevel: this.editTarget,
+      resources: this.editResources
     }).subscribe({
       next: (res: any) => {
         const index = this.skills.findIndex(s => s._id === skillId);
@@ -175,6 +180,23 @@ export class Skills implements OnInit {
     this.newName = '';
     this.newWeight = 3;
     this.newTarget = 3;
+    this.newResources = [];
+  }
+
+  addResourceField(mode: 'new' | 'edit') {
+    if (mode === 'new') {
+      this.newResources.push({ label: '', url: '' });
+    } else {
+      this.editResources.push({ label: '', url: '' });
+    }
+  }
+
+  removeResourceField(mode: 'new' | 'edit', index: number) {
+    if (mode === 'new') {
+      this.newResources.splice(index, 1);
+    } else {
+      this.editResources.splice(index, 1);
+    }
   }
 
   showToast(message: string, isError = false) {

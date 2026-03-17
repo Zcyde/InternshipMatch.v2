@@ -234,6 +234,82 @@ tr:last-child td { border-bottom: none; }
   border-radius: 8px;
 }
 
+.resources-section {
+  margin-top: 1rem;
+  border-top: 1px dashed #e0e0e0;
+  padding-top: 1rem;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.section-header label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #555;
+}
+
+.btn-text {
+  background: none;
+  border: none;
+  color: #185fa5;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.btn-text:hover {
+  text-decoration: underline;
+}
+
+.resource-inputs {
+  display: grid;
+  grid-template-columns: 1fr 2fr auto;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.resource-inputs input {
+  font-size: 12px;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0 4px;
+}
+
+.btn-icon:hover {
+  color: #c8292b;
+}
+
+.edit-panel-cell {
+  padding: 0;
+  background: #fcfcfc;
+}
+
+.edit-panel {
+  padding: 1.5rem;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.edit-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 1.5rem;
+}
+
 .empty-hint {
   font-size: 13px;
   color: #aaa;

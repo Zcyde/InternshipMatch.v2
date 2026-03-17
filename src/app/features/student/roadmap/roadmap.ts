@@ -16,6 +16,7 @@ export class Roadmap implements OnInit {
 
   roleId: string = '';
   result: MatchResult | null = null;
+  totalGaps: number = 0;
 
   ngOnInit() {
     this.roleId = this.route.snapshot.paramMap.get('roleId') || '';
@@ -23,9 +24,19 @@ export class Roadmap implements OnInit {
     const stored = sessionStorage.getItem('matchResult');
     if (stored) {
       this.result = JSON.parse(stored);
+      this.calculateGaps();
     } else {
       this.router.navigate(['/student/role-selection']);
     }
+  }
+
+  calculateGaps() {
+    if (!this.result) return;
+    const missingCount = this.result.missingSkills.length;
+    const improvementCount = this.result.matchedSkills.filter(
+      (s) => s.studentLevel < s.targetLevel
+    ).length;
+    this.totalGaps = missingCount + improvementCount;
   }
 
   goBack() {

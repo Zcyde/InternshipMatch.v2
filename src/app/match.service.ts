@@ -16,10 +16,12 @@ export interface MatchResult {
     studentLevel: number;
     targetLevel: number;
     contribution: number;
+    resources: { label: string; url: string }[];
   }[];
   missingSkills: {
     name: string;
     targetLevel: number;
+    resources: { label: string; url: string }[];
   }[];
 }
 

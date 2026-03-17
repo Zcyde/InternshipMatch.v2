@@ -26,13 +26,21 @@ const resultSchema = new mongoose.Schema({
       name: { type: String },
       studentLevel: { type: Number },
       targetLevel: { type: Number },
-      contribution: { type: Number }
+      contribution: { type: Number },
+      resources: [{
+        label: { type: String },
+        url: { type: String }
+      }]
     }
   ],
   missingSkills: [
     {
       name: { type: String },
-      targetLevel: { type: Number }
+      targetLevel: { type: Number },
+      resources: [{
+        label: { type: String },
+        url: { type: String }
+      }]
     }
   ]
 }, { timestamps: true });

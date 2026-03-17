@@ -21,7 +21,7 @@
       </div>
       <div class="summary-divider"></div>
       <div class="summary-item">
-        <span class="summary-value">{{ result.missingSkills.length }}</span>
+        <span class="summary-value">{{ totalGaps }}</span>
         <span class="summary-label">Skills to improve</span>
       </div>
     </div>
@@ -44,7 +44,17 @@
           <div class="progress-fill fill-red" style="width: 0%"></div>
         </div>
 
-        <p class="no-resources">
+        <div class="resources-box" *ngIf="skill.resources && skill.resources.length > 0">
+          <h4 class="resources-label">Learning Resources</h4>
+          <ul class="resource-list">
+            <li class="resource-item" *ngFor="let res of skill.resources">
+              <span class="res-type">Link</span>
+              <a [href]="res.url" target="_blank" class="res-link">{{ res.label }}</a>
+            </li>
+          </ul>
+        </div>
+
+        <p class="no-resources" *ngIf="!skill.resources || skill.resources.length === 0">
           Focus on reaching level {{ skill.targetLevel }} in this skill to improve your score.
         </p>
 
@@ -74,6 +84,16 @@
             <div class="progress-fill fill-amber"
                  [style.width.%]="(skill.studentLevel / skill.targetLevel) * 100">
             </div>
+          </div>
+
+          <div class="resources-box" *ngIf="skill.resources && skill.resources.length > 0">
+            <h4 class="resources-label">Learning Resources</h4>
+            <ul class="resource-list">
+              <li class="resource-item" *ngFor="let res of skill.resources">
+                <span class="res-type">Link</span>
+                <a [href]="res.url" target="_blank" class="res-link">{{ res.label }}</a>
+              </li>
+            </ul>
           </div>
 
         </div>
