@@ -44,9 +44,13 @@
           <div class="progress-fill fill-red" style="width: 0%"></div>
         </div>
 
-        <p class="no-resources">
-          Focus on reaching level {{ skill.targetLevel }} in this skill to improve your score.
-        </p>
+        <p class="resources-label">Suggested Resources</p>
+        <ul class="resource-list">
+          <li class="resource-item" *ngFor="let res of getResources(skill.name)">
+            <span class="res-type">{{ res.type }}</span>
+            <a class="res-link" [href]="res.url" target="_blank" rel="noopener">{{ res.label }}</a>
+          </li>
+        </ul>
 
       </div>
     </div>
@@ -55,9 +59,8 @@
     <div *ngIf="result.matchedSkills.length > 0">
       <h2 class="section-title">Skills That Need Improvement</h2>
       <div class="gap-cards">
-        <div class="gap-card improve-card"
-             *ngFor="let skill of result.matchedSkills"
-             [class.hidden]="skill.studentLevel >= skill.targetLevel">
+        <div class="gap-card improve-card" *ngFor="let skill of result.matchedSkills"
+          [class.hidden]="skill.studentLevel >= skill.targetLevel">
 
           <div class="gap-header">
             <div class="gap-title-row">
@@ -71,10 +74,17 @@
           </div>
 
           <div class="progress-track">
-            <div class="progress-fill fill-amber"
-                 [style.width.%]="(skill.studentLevel / skill.targetLevel) * 100">
+            <div class="progress-fill fill-amber" [style.width.%]="(skill.studentLevel / skill.targetLevel) * 100">
             </div>
           </div>
+
+          <p class="resources-label">Suggested Resources</p>
+          <ul class="resource-list">
+            <li class="resource-item" *ngFor="let res of getResources(skill.name)">
+              <span class="res-type">{{ res.type }}</span>
+              <a class="res-link" [href]="res.url" target="_blank" rel="noopener">{{ res.label }}</a>
+            </li>
+          </ul>
 
         </div>
       </div>

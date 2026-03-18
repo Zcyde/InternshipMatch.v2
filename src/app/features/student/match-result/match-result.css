@@ -219,3 +219,9 @@
   padding: 60px 0;
   color: #666;
 }
+
+/* Fix for html2canvas: inline-flex doesn't render children properly */
+.pdf-capture .score-circle {
+  display: flex;
+  margin: 0 auto 20px;
+}

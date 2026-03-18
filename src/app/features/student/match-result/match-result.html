@@ -4,56 +4,61 @@
 
   <div *ngIf="result">
 
-    <!-- Score section -->
-    <div class="score-section" [class.ready]="result.isReady" [class.not-ready]="!result.isReady">
-      <h1 class="listing-title">{{ result.listingTitle }}</h1>
+    <!-- PDF-capturable area -->
+    <div id="pdf-content">
 
-      <div class="score-circle">
-        <span class="score-number">{{ result.score }}%</span>
-        <span class="score-label">Compatibility</span>
+      <!-- Score section -->
+      <div class="score-section" [class.ready]="result.isReady" [class.not-ready]="!result.isReady">
+        <h1 class="listing-title">{{ result.listingTitle }}</h1>
+
+        <div class="score-circle">
+          <span class="score-number">{{ result.score }}%</span>
+          <span class="score-label">Compatibility</span>
+        </div>
+
+        <div class="status-badge" [class.badge-ready]="result.isReady" [class.badge-not-ready]="!result.isReady">
+          {{ result.isReady ? '✅ Ready to Apply' : '❌ Not Yet Ready' }}
+        </div>
+
+        <p class="threshold-note">Minimum required score: {{ result.threshold }}%</p>
       </div>
 
-      <div class="status-badge" [class.badge-ready]="result.isReady" [class.badge-not-ready]="!result.isReady">
-        {{ result.isReady ? '✅ Ready to Apply' : '❌ Not Yet Ready' }}
+      <!-- Matched skills -->
+      <div class="section" *ngIf="result.matchedSkills.length > 0">
+        <h2>✅ Matched Skills</h2>
+        <div class="skill-row" *ngFor="let skill of result.matchedSkills">
+          <div class="skill-row-info">
+            <span class="skill-row-name">{{ skill.name }}</span>
+            <span class="skill-row-levels">
+              Your level: <strong>{{ skill.studentLevel }}</strong> /
+              Required: <strong>{{ skill.targetLevel }}</strong>
+            </span>
+          </div>
+          <div class="contribution-bar-wrapper">
+            <div class="contribution-bar" [style.width.%]="skill.contribution"></div>
+          </div>
+          <span class="contribution-label">+{{ skill.contribution }}%</span>
+        </div>
       </div>
 
-      <p class="threshold-note">Minimum required score: {{ result.threshold }}%</p>
-    </div>
-
-    <!-- Matched skills -->
-    <div class="section" *ngIf="result.matchedSkills.length > 0">
-      <h2>✅ Matched Skills</h2>
-      <div class="skill-row" *ngFor="let skill of result.matchedSkills">
-        <div class="skill-row-info">
+      <!-- Missing skills -->
+      <div class="section" *ngIf="result.missingSkills.length > 0">
+        <h2>❌ Missing Skills</h2>
+        <div class="missing-row" *ngFor="let skill of result.missingSkills">
           <span class="skill-row-name">{{ skill.name }}</span>
-          <span class="skill-row-levels">
-            Your level: <strong>{{ skill.studentLevel }}</strong> /
-            Required: <strong>{{ skill.targetLevel }}</strong>
-          </span>
+          <span class="missing-target">Target level: {{ skill.targetLevel }}</span>
         </div>
-        <div class="contribution-bar-wrapper">
-          <div class="contribution-bar" [style.width.%]="skill.contribution"></div>
-        </div>
-        <span class="contribution-label">+{{ skill.contribution }}%</span>
       </div>
+
     </div>
 
-    <!-- Missing skills -->
-    <div class="section" *ngIf="result.missingSkills.length > 0">
-      <h2>❌ Missing Skills</h2>
-      <div class="missing-row" *ngFor="let skill of result.missingSkills">
-        <span class="skill-row-name">{{ skill.name }}</span>
-        <span class="missing-target">Target level: {{ skill.targetLevel }}</span>
-      </div>
-    </div>
-
-    <!-- Actions -->
+    <!-- Actions (outside PDF capture area) -->
     <div class="actions">
       <button class="btn-roadmap" *ngIf="!result.isReady" (click)="goToRoadmap()">
         View Skill Roadmap →
       </button>
-      <button class="btn-export" *ngIf="result.isReady" (click)="exportPDF()">
-        Export as PDF
+      <button class="btn-export" *ngIf="result.isReady" (click)="exportPDF()" [disabled]="isExporting">
+        {{ isExporting ? 'Generating PDF...' : 'Export as PDF' }}
       </button>
       <button class="btn-try-another" (click)="goBack()">
         Try Another Role
