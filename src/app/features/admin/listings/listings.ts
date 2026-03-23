@@ -19,12 +19,8 @@ interface AssignedSkill {
 })
 export class Listings implements OnInit {
 
-  // Available skills pool
-  availableSkills: string[] = [
-    'Angular', 'TypeScript', 'REST APIs', 'Git & Version Control',
-    'Node.js', 'CSS / Tailwind', 'SQL', 'Figma / UI Design',
-    'React', 'Python', 'Java', 'MongoDB'
-  ];
+  // Available skills pool from service
+  availableSkills: string[] = [];
 
   // Form fields
   newTitle = '';
@@ -65,6 +61,7 @@ export class Listings implements OnInit {
   }
 
   ngOnInit() {
+    this.availableSkills = this.listingService.getAvailableSkills();
     this.loadListings();
   }
 

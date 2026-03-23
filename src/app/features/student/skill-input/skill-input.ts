@@ -116,4 +116,4 @@ export class SkillInput implements OnInit {
   goBack() {
     this.router.navigate(['/student/role-selection']);
   }
-}
+}

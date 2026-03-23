@@ -15,6 +15,9 @@ export class Skills implements OnInit {
   // All listings for the dropdown
   listings: any[] = [];
 
+  // Available skills pool from service
+  availableSkills: string[] = [];
+
   // Selected listing
   selectedListingId = '';
 
@@ -45,6 +48,7 @@ export class Skills implements OnInit {
   constructor(private listingService: ListingService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
+    this.availableSkills = this.listingService.getAvailableSkills();
     this.listingService.getAllListings().subscribe({
       next: (res: any) => {
         this.listings = res.listings;

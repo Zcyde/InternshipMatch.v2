@@ -63,4 +63,17 @@ export class ListingService {
   deleteSkill(id: string) {
     return this.http.delete<any>(`${this.apiUrl}/skills/${id}`);
   }
+
+  // ── SKILLS MASTER LIST ──────────────────────────────────
+
+  // Available skills pool from service
+  availableSkills: string[] = [
+    'Angular', 'TypeScript', 'REST APIs', 'Git & Version Control',
+    'Node.js', 'CSS / Tailwind', 'SQL', 'Figma / UI Design',
+    'React', 'Python', 'Java', 'MongoDB'
+  ];
+
+  getAvailableSkills(): string[] {
+    return this.availableSkills;
+  }
 }

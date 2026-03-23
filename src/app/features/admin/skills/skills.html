@@ -32,8 +32,11 @@
     <div class="form-grid">
       <div class="form-group">
         <label>Skill name</label>
-        <input type="text" [(ngModel)]="newName"
-               placeholder="e.g. Angular"/>
+        <input type="text" [(ngModel)]="newName" list="skill-suggestions-main"
+               placeholder="Search or type a skill..." autocomplete="off"/>
+        <datalist id="skill-suggestions-main">
+          <option *ngFor="let s of availableSkills" [value]="s"></option>
+        </datalist>
       </div>
       <div class="form-group">
         <label>Weight (1–10)</label>
@@ -87,7 +90,11 @@
           <!-- Edit row -->
           <tr *ngIf="editingSkillId === skill._id">
             <td>
-              <input type="text" [(ngModel)]="editName" class="inline-input"/>
+              <input type="text" [(ngModel)]="editName" list="skill-suggestions-edit" 
+                     class="inline-input" autocomplete="off"/>
+              <datalist id="skill-suggestions-edit">
+                <option *ngFor="let s of availableSkills" [value]="s"></option>
+              </datalist>
             </td>
             <td>
               <input type="number" [(ngModel)]="editWeight"
