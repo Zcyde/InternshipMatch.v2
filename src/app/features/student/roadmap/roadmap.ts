@@ -69,6 +69,8 @@ const SKILL_RESOURCES: { [key: string]: Resource[] } = {
   ]
 };
 
+// ... (keep existing imports and interface)
+
 @Component({
   selector: 'app-roadmap',
   standalone: true,
@@ -77,15 +79,13 @@ const SKILL_RESOURCES: { [key: string]: Resource[] } = {
   styleUrl: './roadmap.css'
 })
 export class Roadmap implements OnInit {
-
-  constructor(private route: ActivatedRoute, private router: Router) {}
-
   roleId: string = '';
   result: MatchResult | null = null;
 
+  constructor(private route: ActivatedRoute, private router: Router) {}
+
   ngOnInit() {
     this.roleId = this.route.snapshot.paramMap.get('roleId') || '';
-
     const stored = sessionStorage.getItem('matchResult');
     if (stored) {
       this.result = JSON.parse(stored);
@@ -94,13 +94,23 @@ export class Roadmap implements OnInit {
     }
   }
 
+  // ✅ New Getter: Kukunin lang ang skills na mas mababa ang level kaysa sa target
+  get skillsToImprove() {
+    if (!this.result) return [];
+    return this.result.matchedSkills.filter(
+      skill => skill.studentLevel < skill.targetLevel
+    );
+  }
+
+  // ✅ Updated Getter for count sa summary box
+  get totalGapsCount(): number {
+    if (!this.result) return 0;
+    return this.result.missingSkills.length + this.skillsToImprove.length;
+  }
+
   getResources(skillName: string): Resource[] {
     const key = skillName.toLowerCase().trim();
-    if (SKILL_RESOURCES[key]) {
-      return SKILL_RESOURCES[key];
-    }
-    // Fallback: provide a Google search link for unknown skills
-    return [
+    return SKILL_RESOURCES[key] || [
       { type: 'Search', label: `Search tutorials for "${skillName}"`, url: `https://www.google.com/search?q=learn+${encodeURIComponent(skillName)}+tutorial` }
     ];
   }

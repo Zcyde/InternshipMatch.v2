@@ -12,15 +12,28 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./login.css']
 })
 export class Login {
-  loginData = { username: '', password: '' };
+  loginData = { username: '', password: '', name: '', email: '' };
   errorMessage: string = '';
   isSignupMode: boolean = false;
+  isAdminMode: boolean = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
+  switchToAdmin() {
+    this.isAdminMode = true;
+    this.isSignupMode = false;
+    this.resetForm();
+  }
+
+  switchToStudent() {
+    this.isAdminMode = false;
+    this.isSignupMode = false;
+    this.resetForm();
+  }
+
   onLogin() {
     if (!this.loginData.username || !this.loginData.password) {
-      this.errorMessage = 'Please enter your username and password.';
+      this.errorMessage = 'Please enter your credentials.';
       return;
     }
 
@@ -28,7 +41,11 @@ export class Login {
       .subscribe({
         next: (res: any) => {
           if (res.status === 'success') {
-            this.authService.saveSession(res.role, res.userId || 'admin');
+            const fullNameToSave = res.fullName || res.username || 'Student';
+
+            // saveSession already sets fullName in sessionStorage — no need to duplicate
+            this.authService.saveSession(res.role, res.userId, fullNameToSave);
+
             if (res.role === 'admin') {
               this.router.navigate(['/admin']);
             } else {
@@ -43,18 +60,17 @@ export class Login {
   }
 
   onSignup() {
-    if (!this.loginData.username || !this.loginData.password) {
-      this.errorMessage = 'Please enter a username and password.';
+    const { username, password, name, email } = this.loginData;
+    if (!username || !password || !name || !email) {
+      this.errorMessage = 'All fields are required for student registration.';
       return;
     }
 
-    this.authService.register(this.loginData.username, this.loginData.password)
+    this.authService.register(this.loginData)
       .subscribe({
         next: (res: any) => {
           alert(res.message || 'Registration successful! You can now log in.');
-          this.isSignupMode = false;
-          this.errorMessage = '';
-          this.loginData = { username: '', password: '' };
+          this.toggleMode();
         },
         error: (err) => {
           this.errorMessage = err.error?.message || 'Registration failed. Try again.';
@@ -62,14 +78,14 @@ export class Login {
       });
   }
 
-  onAdminQuickAccess() {
-    this.loginData = { username: 'admin', password: 'admin123' };
-    this.onLogin();
-  }
-
   toggleMode() {
     this.isSignupMode = !this.isSignupMode;
+    this.isAdminMode = false;
+    this.resetForm();
+  }
+
+  private resetForm() {
     this.errorMessage = '';
-    this.loginData = { username: '', password: '' };
+    this.loginData = { username: '', password: '', name: '', email: '' };
   }
 }

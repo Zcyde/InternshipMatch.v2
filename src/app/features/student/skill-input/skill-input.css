@@ -133,4 +133,78 @@
 
 .error-message {
   color: #9b1c1c;
-}
+}
+
+/* Resume Scanner Section */
+.resume-scanner-section {
+  margin-bottom: 32px;
+  background: #fff;
+  border: 2px dashed #e5e5e5;
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.3s ease;
+}
+
+/* Subtle glow when hovering or if scanning */
+.resume-scanner-section:hover, 
+.resume-scanner-section.scanning {
+  border-color: #9b1c1c;
+  background: #fffafa; /* Very light red tint */
+}
+
+.scanner-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.scanner-info h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 4px 0;
+}
+
+.scanner-info p {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
+}
+
+/* Hidden input, styled label as button */
+.btn-scan {
+  display: inline-block;
+  background: #f9f9f9;
+  border: 1px solid #e5e5e5;
+  color: #1a1a1a;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.btn-scan:hover {
+  background: #9b1c1c;
+  color: #fff;
+  border-color: #9b1c1c;
+}
+
+/* Scanning State for the button */
+.btn-scan.disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  background: #eee;
+}
+
+/* Responsive adjustment */
+@media (max-width: 500px) {
+  .scanner-card {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+

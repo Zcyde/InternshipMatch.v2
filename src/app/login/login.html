@@ -3,46 +3,59 @@
 
     <div class="login-logo">
       <p class="logo-title">InternshipMatch</p>
-      <span class="logo-badge">HAU SOC</span>
+      <span class="logo-badge">HAU SOC {{ isAdminMode ? 'ADMIN' : '' }}</span>
     </div>
 
     <h2 class="login-heading">
-      {{ isSignupMode ? 'Student Registration' : 'Secure Portal Access' }}
+      {{ isSignupMode ? 'Student Registration' : (isAdminMode ? 'Administrator Login' : 'Secure Portal Access') }}
     </h2>
     <p class="login-sub">Advanced Dynamic Web Development (6AWEB)</p>
 
     <div class="login-form">
+      <ng-container *ngIf="isSignupMode && !isAdminMode">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" [(ngModel)]="loginData.name" placeholder="Enter your full name"/>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" [(ngModel)]="loginData.email" placeholder="Enter your email"/>
+        </div>
+      </ng-container>
+
       <div class="form-group">
-        <label>Username</label>
-        <input type="text" [(ngModel)]="loginData.username"
-               placeholder="Enter your username"/>
+        <label>{{ isAdminMode ? 'Admin Name' : (isSignupMode ? 'Choose Name' : 'Username or Email') }}</label>
+        <input type="text" [(ngModel)]="loginData.username" placeholder="Enter credentials"/>
       </div>
 
       <div class="form-group">
         <label>Password</label>
         <input type="password" [(ngModel)]="loginData.password"
                (keyup.enter)="isSignupMode ? onSignup() : onLogin()"
-               placeholder="Enter your password"/>
+               placeholder="Enter password"/>
       </div>
 
       <p class="error-text" *ngIf="errorMessage">{{ errorMessage }}</p>
 
       <button class="btn-login" (click)="isSignupMode ? onSignup() : onLogin()">
-        {{ isSignupMode ? 'Register Student' : 'Enter System' }}
+        {{ isSignupMode ? 'Register Student' : (isAdminMode ? 'Admin Sign In' : 'Enter System') }}
       </button>
 
-      <a class="toggle-link" (click)="toggleMode()">
+      <a class="toggle-link" *ngIf="!isAdminMode" (click)="toggleMode()">
         {{ isSignupMode ? 'Already have an account? Log in' : 'New student? Sign up here' }}
       </a>
 
-      <div class="divider" *ngIf="!isSignupMode">
+      <a class="toggle-link" *ngIf="isAdminMode" (click)="switchToStudent()">
+        ← Back to Student Login
+      </a>
+
+      <div class="divider" *ngIf="!isSignupMode && !isAdminMode">
         <span>or</span>
       </div>
 
-      <button class="btn-admin" *ngIf="!isSignupMode" (click)="onAdminQuickAccess()">
-        Admin Quick Access 🔑
+      <button class="btn-admin" *ngIf="!isSignupMode && !isAdminMode" (click)="switchToAdmin()">
+        Administrator Portal 🔑
       </button>
     </div>
-
   </div>
 </div>

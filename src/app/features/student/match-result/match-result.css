@@ -225,3 +225,54 @@
   display: flex;
   margin: 0 auto 20px;
 }
+
+/* PDF Specific Header Styles */
+.pdf-report-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 3px solid #c8292b;
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.report-subtitle {
+  font-size: 12px;
+  color: #c8292b;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin: 0 0 5px 0;
+}
+
+.student-name-display {
+  font-size: 28px;
+  color: #111;
+  margin: 0;
+  font-weight: 800;
+}
+
+.report-date {
+  font-size: 13px;
+  color: #777;
+  margin: 5px 0 0 0;
+}
+
+.report-branding {
+  background: #c8292b;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+/* Ensure capture styling */
+#pdf-content {
+  background: #ffffff;
+  padding: 30px;
+}
+
+.pdf-capture {
+  width: 800px; /* Fixed width for better canvas resolution */
+  margin: 0 auto;
+}

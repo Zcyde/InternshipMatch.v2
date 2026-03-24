@@ -4,10 +4,19 @@
 
   <div *ngIf="result">
 
-    <!-- PDF-capturable area -->
     <div id="pdf-content">
+      
+      <div class="pdf-report-header">
+        <div class="report-info">
+          <p class="report-subtitle">Internship Compatibility Assessment</p>
+          <h1 class="student-name-display">{{ userName }}</h1>
+          <p class="report-date">Generated on: {{ today | date:'longDate' }}</p>
+        </div>
+        <div class="report-branding">
+          <span class="brand-text">InternshipMatch</span>
+        </div>
+      </div>
 
-      <!-- Score section -->
       <div class="score-section" [class.ready]="result.isReady" [class.not-ready]="!result.isReady">
         <h1 class="listing-title">{{ result.listingTitle }}</h1>
 
@@ -23,7 +32,6 @@
         <p class="threshold-note">Minimum required score: {{ result.threshold }}%</p>
       </div>
 
-      <!-- Matched skills -->
       <div class="section" *ngIf="result.matchedSkills.length > 0">
         <h2>✅ Matched Skills</h2>
         <div class="skill-row" *ngFor="let skill of result.matchedSkills">
@@ -41,7 +49,6 @@
         </div>
       </div>
 
-      <!-- Missing skills -->
       <div class="section" *ngIf="result.missingSkills.length > 0">
         <h2>❌ Missing Skills</h2>
         <div class="missing-row" *ngFor="let skill of result.missingSkills">
@@ -52,7 +59,6 @@
 
     </div>
 
-    <!-- Actions (outside PDF capture area) -->
     <div class="actions">
       <button class="btn-roadmap" *ngIf="!result.isReady" (click)="goToRoadmap()">
         View Skill Roadmap →
@@ -67,7 +73,6 @@
 
   </div>
 
-  <!-- No result fallback -->
   <div class="no-result" *ngIf="!result">
     <p>No result found. Please go back and assess a role first.</p>
   </div>

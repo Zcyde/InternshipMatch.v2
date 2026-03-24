@@ -8,7 +8,6 @@
 
   <div *ngIf="result">
 
-    <!-- Score Summary -->
     <div class="score-summary">
       <div class="summary-item">
         <span class="summary-value">{{ result.score }}%</span>
@@ -16,51 +15,49 @@
       </div>
       <div class="summary-divider"></div>
       <div class="summary-item">
-        <span class="summary-value">{{ result.threshold }}%</span>
+        <span class="summary-value">70%</span>
         <span class="summary-label">Required to qualify</span>
       </div>
       <div class="summary-divider"></div>
       <div class="summary-item">
-        <span class="summary-value">{{ result.missingSkills.length }}</span>
+        <span class="summary-value">{{ totalGapsCount }}</span>
         <span class="summary-label">Skills to improve</span>
       </div>
     </div>
 
-    <!-- Missing Skill Cards -->
-    <div class="gap-cards">
-      <div class="gap-card" *ngFor="let skill of result.missingSkills">
-
-        <div class="gap-header">
-          <div class="gap-title-row">
-            <h2 class="gap-name">{{ skill.name }}</h2>
-            <span class="gap-badge badge-missing">Not yet learned</span>
+    <div *ngIf="result.missingSkills.length > 0">
+      <h2 class="section-title">New Skills to Learn</h2>
+      <div class="gap-cards">
+        <div class="gap-card" *ngFor="let skill of result.missingSkills">
+          <div class="gap-header">
+            <div class="gap-title-row">
+              <h2 class="gap-name">{{ skill.name }}</h2>
+              <span class="gap-badge badge-missing">Not yet learned</span>
+            </div>
+            <div class="level-row">
+              <span class="level-text">Target level: <strong>{{ skill.targetLevel }} / 5</strong></span>
+            </div>
           </div>
-          <div class="level-row">
-            <span class="level-text">Target level: <strong>{{ skill.targetLevel }} / 5</strong></span>
+
+          <div class="progress-track">
+            <div class="progress-fill fill-red" style="width: 0%"></div>
           </div>
+
+          <p class="resources-label">Suggested Resources</p>
+          <ul class="resource-list">
+            <li class="resource-item" *ngFor="let res of getResources(skill.name)">
+              <span class="res-type">{{ res.type }}</span>
+              <a class="res-link" [href]="res.url" target="_blank" rel="noopener">{{ res.label }}</a>
+            </li>
+          </ul>
         </div>
-
-        <div class="progress-track">
-          <div class="progress-fill fill-red" style="width: 0%"></div>
-        </div>
-
-        <p class="resources-label">Suggested Resources</p>
-        <ul class="resource-list">
-          <li class="resource-item" *ngFor="let res of getResources(skill.name)">
-            <span class="res-type">{{ res.type }}</span>
-            <a class="res-link" [href]="res.url" target="_blank" rel="noopener">{{ res.label }}</a>
-          </li>
-        </ul>
-
       </div>
     </div>
 
-    <!-- Also show partially matched skills that need improvement -->
-    <div *ngIf="result.matchedSkills.length > 0">
-      <h2 class="section-title">Skills That Need Improvement</h2>
+    <div *ngIf="skillsToImprove.length > 0">
+      <h2 class="section-title">Skills to Level Up</h2>
       <div class="gap-cards">
-        <div class="gap-card improve-card" *ngFor="let skill of result.matchedSkills"
-          [class.hidden]="skill.studentLevel >= skill.targetLevel">
+        <div class="gap-card improve-card" *ngFor="let skill of skillsToImprove">
 
           <div class="gap-header">
             <div class="gap-title-row">
@@ -90,13 +87,16 @@
       </div>
     </div>
 
+    <div class="success-box" *ngIf="result.missingSkills.length === 0 && skillsToImprove.length === 0">
+        <h3>🎉 You've met all skill requirements!</h3>
+        <p>You are ready to apply for this position.</p>
+    </div>
+
   </div>
 
-  <!-- Footer -->
   <div class="page-footer">
     <button class="btn-listings" (click)="goToRoleSelection()">
       Check another role
     </button>
   </div>
-
 </div>

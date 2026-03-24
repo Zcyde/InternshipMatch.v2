@@ -1,5 +1,4 @@
 <div class="skill-input-wrapper">
-
   <button class="btn-back" (click)="goBack()">← Back to roles</button>
 
   <div class="skill-header">
@@ -7,24 +6,38 @@
     <p>Rate your proficiency for each required skill</p>
   </div>
 
-  <!-- Loading state -->
+  <div class="resume-scanner-section" [class.scanning]="isScanning" *ngIf="!isLoading">
+    <div class="scanner-card">
+      <div class="scanner-info">
+        <h3>⚡ Quick Auto-fill</h3>
+        <p>Upload your resume (PDF, PNG, or JPG) to automatically detect your skills.</p>
+      </div>
+      <label class="btn-scan" [class.disabled]="isScanning">
+        <input 
+          type="file" 
+          (change)="onFileSelected($event)" 
+          accept=".pdf,.png,.jpg,.jpeg" 
+          hidden 
+          [disabled]="isScanning" />
+        <span>{{ isScanning ? '🔍 Scanning Resume...' : 'Upload Resume' }}</span>
+      </label>
+    </div>
+  </div>
+
   <div class="loading" *ngIf="isLoading">
     <p>Loading skills...</p>
   </div>
 
-  <!-- Error state -->
-  <div class="error-message" *ngIf="errorMessage">
+  <div class="error-message" *ngIf="errorMessage" style="color: #ff4d4d; margin: 10px 0;">
     <p>{{ errorMessage }}</p>
   </div>
 
-  <!-- Skills list -->
   <div class="skills-list" *ngIf="!isLoading && skills.length > 0">
     <div class="skill-item" *ngFor="let skill of skills">
-
       <div class="skill-info">
         <span class="skill-name">{{ skill.name }}</span>
-        <span class="skill-level-label">
-          {{ proficiencyLabel(getProficiencyForSkill(skill.name)) }}
+        <span class="skill-level-label" [class.set]="skill.proficiency > 0">
+          {{ proficiencyLabel(skill.proficiency) }}
         </span>
       </div>
 
@@ -32,12 +45,11 @@
         <button
           *ngFor="let level of [1,2,3,4,5]"
           class="level-btn"
-          [class.active]="getProficiencyForSkill(skill.name) === level"
+          [class.active]="skill.proficiency === level"
           (click)="setProficiency(skill.name, level)">
           {{ level }}
         </button>
       </div>
-
     </div>
   </div>
 
@@ -45,10 +57,8 @@
     <button
       class="btn-compute"
       (click)="computeMatch()"
-      [disabled]="isComputing">
+      [disabled]="isComputing || isScanning">
       {{ isComputing ? 'Computing...' : 'Check my compatibility →' }}
     </button>
-    <p class="submit-note">Skills with no rating selected will be treated as missing</p>
   </div>
-
-</div>
+</div>

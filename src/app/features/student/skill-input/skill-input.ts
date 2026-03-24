@@ -5,6 +5,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ListingService } from '../../../listing.service';
 import { MatchService, StudentSkill } from '../../../match.service';
 import { AuthService } from '../../../auth.service';
+// After renaming the file to resume-parser.service.ts
+
+import { ResumeParserService } from '../../../core/services/resume-parser.service';
 
 @Component({
   selector: 'app-skill-input',
@@ -14,13 +17,13 @@ import { AuthService } from '../../../auth.service';
   styleUrl: './skill-input.css'
 })
 export class SkillInput implements OnInit {
-
   listingId: string = '';
   listingTitle: string = '';
   skills: any[] = [];
   studentSkills: StudentSkill[] = [];
   isLoading = true;
   isComputing = false;
+  isScanning = false; // New state for scanning
   errorMessage = '';
 
   constructor(
@@ -29,13 +32,13 @@ export class SkillInput implements OnInit {
     private listingService: ListingService,
     private matchService: MatchService,
     private authService: AuthService,
+    private resumeService: ResumeParserService, // Injected service
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     this.listingId = this.route.snapshot.paramMap.get('roleId') || '';
 
-    // Load listing title
     this.listingService.getListing(this.listingId).subscribe({
       next: (res: any) => {
         this.listingTitle = res.listing.title;
@@ -47,7 +50,6 @@ export class SkillInput implements OnInit {
       }
     });
 
-    // Load skills for this listing
     this.listingService.getSkillsByListing(this.listingId).subscribe({
       next: (res: any) => {
         this.skills = res.skills;
@@ -66,15 +68,38 @@ export class SkillInput implements OnInit {
     });
   }
 
-  proficiencyLabel(level: number): string {
-    switch (level) {
-      case 1: return 'Beginner';
-      case 2: return 'Elementary';
-      case 3: return 'Intermediate';
-      case 4: return 'Advanced';
-      case 5: return 'Expert';
-      default: return 'Not set';
+  async onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    this.isScanning = true;
+    this.errorMessage = '';
+
+    try {
+      const text = await this.resumeService.extractText(file);
+      const lowerText = text.toLowerCase();
+
+      this.studentSkills.forEach(skill => {
+        if (lowerText.includes(skill.name.toLowerCase())) {
+          // Default to Level 3 (Intermediate) if found
+          skill.proficiencyLevel = 3;
+        }
+      });
+
+      this.isScanning = false;
+      this.cdr.detectChanges();
+    } catch (error) {
+      this.errorMessage = 'Failed to parse the resume. Please ensure it is a valid PDF.';
+      this.isScanning = false;
+      this.cdr.detectChanges();
     }
+  }
+
+  proficiencyLabel(level: number): string {
+    const labels: { [key: number]: string } = {
+      1: 'Beginner', 2: 'Elementary', 3: 'Intermediate', 4: 'Advanced', 5: 'Expert'
+    };
+    return labels[level] || 'Not set';
   }
 
   getProficiencyForSkill(skillName: string): number {
@@ -92,13 +117,11 @@ export class SkillInput implements OnInit {
   computeMatch() {
     const studentId = this.authService.getUserId();
     if (!studentId) {
-      this.errorMessage = 'Session expired. Please log in again.';
       this.router.navigate(['/login']);
       return;
     }
 
     this.isComputing = true;
-
     this.matchService.computeMatch(studentId, this.listingId, this.studentSkills)
       .subscribe({
         next: (res: any) => {
@@ -106,7 +129,7 @@ export class SkillInput implements OnInit {
           this.router.navigate(['/student/result', this.listingId]);
         },
         error: () => {
-          this.errorMessage = 'Failed to compute match. Please try again.';
+          this.errorMessage = 'Failed to compute match.';
           this.isComputing = false;
           this.cdr.detectChanges();
         }
@@ -116,4 +139,4 @@ export class SkillInput implements OnInit {
   goBack() {
     this.router.navigate(['/student/role-selection']);
   }
-}
+}

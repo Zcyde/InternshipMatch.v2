@@ -15,13 +15,15 @@ export class AuthService {
     return this.http.post<any>(`${this.apiUrl}/login`, { username, password });
   }
 
-  register(username: string, password: string) {
-    return this.http.post<any>(`${this.apiUrl}/register`, { username, password });
+  register(userData: any) {
+    return this.http.post<any>(`${this.apiUrl}/register`, userData);
   }
 
-  saveSession(role: string, userId: string) {
+  // UPDATED: Added fullName parameter to store the user's name
+  saveSession(role: string, userId: string, fullName: string) {
     sessionStorage.setItem('role', role);
     sessionStorage.setItem('userId', userId);
+    sessionStorage.setItem('fullName', fullName); 
   }
 
   getRole(): string | null {
