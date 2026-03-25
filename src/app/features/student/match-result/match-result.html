@@ -33,7 +33,7 @@
       </div>
 
       <div class="section" *ngIf="result.matchedSkills.length > 0">
-        <h2>✅ Matched Skills</h2>
+        <h2>Matched Skills</h2>
         <div class="skill-row" *ngFor="let skill of result.matchedSkills">
           <div class="skill-row-info">
             <span class="skill-row-name">{{ skill.name }}</span>
@@ -50,7 +50,7 @@
       </div>
 
       <div class="section" *ngIf="result.missingSkills.length > 0">
-        <h2>❌ Missing Skills</h2>
+        <h2>Missing Skills</h2>
         <div class="missing-row" *ngFor="let skill of result.missingSkills">
           <span class="skill-row-name">{{ skill.name }}</span>
           <span class="missing-target">Target level: {{ skill.targetLevel }}</span>

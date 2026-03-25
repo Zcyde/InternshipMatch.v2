@@ -1,96 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Source+Sans+3:wght@400;500;600&display=swap');
+
 .role-selection-wrapper {
-  max-width: 900px;
-  margin: 60px auto;
-  padding: 0 24px;
+  max-width: 920px;
+  margin: 56px auto;
+  padding: 0 32px;
+}
+
+.role-eyebrow {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #c8292b;
+  margin-bottom: 14px;
 }
 
 .role-header {
-  text-align: center;
-  margin-bottom: 48px;
+  margin-bottom: 52px;
+  border-bottom: 1px solid #e2e6ed;
+  padding-bottom: 32px;
 }
 
 .role-header h1 {
+  font-family: 'Libre Baskerville', serif;
   font-size: 2rem;
   font-weight: 700;
-  color: #1a1a1a;
-  margin-bottom: 8px;
+  color: #0f1f3d;
+  letter-spacing: -0.3px;
+  margin-bottom: 10px;
+  line-height: 1.2;
 }
 
 .role-header p {
-  font-size: 1rem;
-  color: #666;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.9rem;
+  color: #6b7a99;
+  line-height: 1.6;
 }
 
 .roles-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
 }
 
 .role-card {
-  background: #fff;
-  border: 1px solid #e5e5e5;
+  background: #ffffff;
+  border: 0.5px solid #e2e6ed;
   border-radius: 12px;
-  padding: 28px;
+  padding: 24px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .role-card:hover {
-  border-color: #9b1c1c;
-  box-shadow: 0 4px 20px rgba(155, 28, 28, 0.12);
-  transform: translateY(-2px);
+  background: #0f1f3d;
+  border-color: #0f1f3d;
 }
 
-.role-card-header {
+.card-top {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 12px;
+  align-items: center;
 }
 
-.role-card-header h2 {
-  font-size: 1.1rem;
+.card-number {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.7rem;
   font-weight: 600;
-  color: #1a1a1a;
-  margin: 0;
-  flex: 1;
-  padding-right: 12px;
+  color: #d0d4dc;
+  letter-spacing: 1px;
+  transition: color 0.2s ease;
+}
+
+.role-card:hover .card-number {
+  color: rgba(255, 255, 255, 0.3);
 }
 
 .threshold-badge {
-  background: #fff5f5;
-  color: #9b1c1c;
-  font-size: 0.75rem;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.65rem;
   font-weight: 600;
-  padding: 4px 10px;
-  border-radius: 20px;
+  letter-spacing: 0.5px;
+  background: #fdf0f0;
+  color: #a82123;
+  padding: 3px 9px;
+  border-radius: 3px;
+  border: 1px solid #f5c6c6;
   white-space: nowrap;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.role-card:hover .threshold-badge {
+  background: rgba(200, 41, 43, 0.15);
+  color: #e07071;
+  border-color: rgba(200, 41, 43, 0.3);
+}
+
+.role-card h2 {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0f1f3d;
+  line-height: 1.35;
+  transition: color 0.2s ease;
+}
+
+.role-card:hover h2 {
+  color: #f0f2f7;
 }
 
 .role-description {
-  font-size: 0.9rem;
-  color: #666;
-  margin-bottom: 20px;
-  line-height: 1.5;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.8rem;
+  color: #8892a4;
+  line-height: 1.6;
+  flex: 1;
 }
 
 .role-card-footer {
-  margin-top: 20px;
+  margin-top: 6px;
 }
 
 .select-label {
-  font-size: 0.9rem;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.7rem;
   font-weight: 600;
-  color: #9b1c1c;
+  color: #c8292b;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s ease, gap 0.18s ease;
 }
 
+.role-card:hover .select-label {
+  color: #e07071;
+  gap: 10px;
+}
+
+/* States */
 .loading, .error, .empty {
+  font-family: 'Source Sans 3', sans-serif;
   text-align: center;
   padding: 60px 0;
-  color: #666;
+  font-size: 0.875rem;
+  color: #6b7a99;
 }
 
-.error {
-  color: #9b1c1c;
-}
+.error { color: #a82123; }

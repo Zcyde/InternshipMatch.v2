@@ -1,155 +1,71 @@
 .skill-input-wrapper {
   max-width: 700px;
-  margin: 40px auto;
-  padding: 0 24px;
+  margin: 48px auto;
+  padding: 0 32px;
 }
 
+/* ── Back Button ── */
 .btn-back {
   background: none;
   border: none;
-  color: #9b1c1c;
-  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.8rem;
   font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
   cursor: pointer;
   padding: 0;
   margin-bottom: 32px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.18s ease, gap 0.18s ease;
 }
 
+.btn-back:hover {
+  color: var(--crimson);
+  gap: 10px;
+}
+
+/* ── Header ── */
 .skill-header {
   margin-bottom: 36px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 28px;
 }
 
 .skill-header h1 {
-  font-size: 1.8rem;
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.9rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--navy);
   margin-bottom: 8px;
+  line-height: 1.2;
+  letter-spacing: -0.3px;
 }
 
 .skill-header p {
-  color: #666;
-  font-size: 0.95rem;
-}
-
-.skills-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-bottom: 36px;
-}
-
-.skill-item {
-  background: #fff;
-  border: 1px solid #e5e5e5;
-  border-radius: 10px;
-  padding: 20px 24px;
-}
-
-.skill-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-}
-
-.skill-name {
-  font-weight: 600;
-  color: #1a1a1a;
-  font-size: 0.95rem;
-}
-
-.skill-level-label {
-  font-size: 0.8rem;
-  color: #9b1c1c;
-  font-weight: 600;
-}
-
-.proficiency-buttons {
-  display: flex;
-  gap: 8px;
-}
-
-.level-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  border: 1px solid #e5e5e5;
-  background: #f9f9f9;
-  font-weight: 600;
+  font-family: 'Source Sans 3', sans-serif;
+  color: var(--text-muted);
   font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  color: #666;
+  line-height: 1.6;
 }
 
-.level-btn:hover {
-  border-color: #9b1c1c;
-  color: #9b1c1c;
-}
-
-.level-btn.active {
-  background: #9b1c1c;
-  border-color: #9b1c1c;
-  color: #fff;
-}
-
-.submit-section {
-  text-align: center;
-  padding-top: 12px;
-}
-
-.btn-compute {
-  background: #9b1c1c;
-  color: #fff;
-  border: none;
-  padding: 14px 40px;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.btn-compute:hover:not(:disabled) {
-  background: #7f1515;
-}
-
-.btn-compute:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.submit-note {
-  margin-top: 12px;
-  font-size: 0.8rem;
-  color: #999;
-}
-
-.loading, .error-message {
-  text-align: center;
-  padding: 40px 0;
-  color: #666;
-}
-
-.error-message {
-  color: #9b1c1c;
-}
-
-/* Resume Scanner Section */
+/* ── Resume Scanner ── */
 .resume-scanner-section {
-  margin-bottom: 32px;
-  background: #fff;
-  border: 2px dashed #e5e5e5;
+  margin-bottom: 24px;
+  background: #ffffff;
+  border: 1px dashed var(--border);
   border-radius: 12px;
-  padding: 24px;
-  transition: all 0.3s ease;
+  padding: 22px 24px;
+  transition: border-color 0.2s ease, background 0.2s ease;
 }
 
-/* Subtle glow when hovering or if scanning */
-.resume-scanner-section:hover, 
+.resume-scanner-section:hover,
 .resume-scanner-section.scanning {
-  border-color: #9b1c1c;
-  background: #fffafa; /* Very light red tint */
+  border-color: var(--crimson);
+  background: var(--crimson-light);
 }
 
 .scanner-card {
@@ -160,51 +76,182 @@
 }
 
 .scanner-info h3 {
-  font-size: 1.1rem;
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--navy);
   margin: 0 0 4px 0;
 }
 
 .scanner-info p {
-  font-size: 0.85rem;
-  color: #666;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.82rem;
+  color: var(--text-muted);
   margin: 0;
+  line-height: 1.5;
 }
 
-/* Hidden input, styled label as button */
 .btn-scan {
   display: inline-block;
-  background: #f9f9f9;
-  border: 1px solid #e5e5e5;
-  color: #1a1a1a;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-size: 0.9rem;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--text-primary);
+  font-family: 'Source Sans 3', sans-serif;
+  padding: 9px 20px;
+  border-radius: 6px;
+  font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
+  letter-spacing: 0.2px;
   transition: all 0.2s ease;
 }
 
 .btn-scan:hover {
-  background: #9b1c1c;
-  color: #fff;
-  border-color: #9b1c1c;
+  background: var(--crimson);
+  color: #ffffff;
+  border-color: var(--crimson);
 }
 
-/* Scanning State for the button */
 .btn-scan.disabled {
-  opacity: 0.7;
+  opacity: 0.5;
   cursor: not-allowed;
-  background: #eee;
+  background: transparent;
 }
 
-/* Responsive adjustment */
+/* ── Skills List ── */
+.skills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 36px;
+}
+
+.skill-item {
+  background: #ffffff;
+  border: 0.5px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 24px;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.skill-item:hover {
+  border-color: #c8d0de;
+  box-shadow: 0 2px 12px rgba(15, 31, 61, 0.06);
+}
+
+.skill-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.skill-name {
+  font-family: 'Source Sans 3', sans-serif;
+  font-weight: 600;
+  color: var(--navy);
+  font-size: 0.92rem;
+  letter-spacing: 0.1px;
+}
+
+.skill-level-label {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--crimson);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* ── Proficiency Buttons ── */
+.proficiency-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.level-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  border: 0.5px solid var(--border);
+  background: #f9fafc;
+  font-family: 'Source Sans 3', sans-serif;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: var(--text-muted);
+}
+
+.level-btn:hover {
+  border-color: var(--crimson);
+  color: var(--crimson);
+  background: var(--crimson-light);
+}
+
+.level-btn.active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: #ffffff;
+}
+
+/* ── Submit ── */
+.submit-section {
+  text-align: center;
+  padding-top: 12px;
+}
+
+.btn-compute {
+  background: var(--navy);
+  color: #ffffff;
+  border: none;
+  font-family: 'Source Sans 3', sans-serif;
+  padding: 13px 48px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.btn-compute:hover:not(:disabled) {
+  background: #1a3260;
+  transform: translateY(-1px);
+}
+
+.btn-compute:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.submit-note {
+  margin-top: 12px;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 0.78rem;
+  color: #b0b8c8;
+  letter-spacing: 0.1px;
+}
+
+/* ── States ── */
+.loading,
+.error-message {
+  font-family: 'Source Sans 3', sans-serif;
+  text-align: center;
+  padding: 40px 0;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+.error-message {
+  color: var(--crimson);
+}
+
 @media (max-width: 500px) {
   .scanner-card {
     flex-direction: column;
     text-align: center;
   }
 }
-

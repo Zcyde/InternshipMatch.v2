@@ -1,8 +1,10 @@
 <div class="role-selection-wrapper">
 
   <div class="role-header">
+    <p class="role-eyebrow">Internship Assessment</p>
     <h1>What role are you targeting?</h1>
-    <p>Select the internship role you want to assess your compatibility for</p>
+    <p>Select the internship role you want to assess your compatibility for.
+       Each role has a minimum threshold score required for placement consideration.</p>
   </div>
 
   <!-- Loading state -->
@@ -19,20 +21,22 @@
   <div class="roles-grid" *ngIf="!isLoading && !errorMessage">
     <div
       class="role-card"
-      *ngFor="let listing of listings"
+      *ngFor="let listing of listings; let i = index"
       (click)="selectRole(listing._id)">
 
-      <div class="role-card-header">
-        <h2>{{ listing.title }}</h2>
+      <div class="card-top">
+        <span class="card-number">{{ (i + 1).toString().padStart(2, '0') }}</span>
         <span class="threshold-badge">Min. {{ listing.threshold }}%</span>
       </div>
+
+      <h2>{{ listing.title }}</h2>
 
       <p class="role-description" *ngIf="listing.description">
         {{ listing.description }}
       </p>
 
       <div class="role-card-footer">
-        <span class="select-label">Assess my compatibility →</span>
+        <span class="select-label">Assess compatibility →</span>
       </div>
 
     </div>

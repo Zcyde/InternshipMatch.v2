@@ -1,99 +1,151 @@
+/* ============================= */
+/* ROADMAP PAGE STYLING */
+/* ============================= */
+
 .roadmap-page {
   max-width: 700px;
-  margin: 0 auto;
+  margin: 2rem auto;
+  padding: 20px;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(145deg, #f4f7fa, #e6f0ff);
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
 }
 
-.page-header {
-  margin-bottom: 1.5rem;
+/* Animated subtle background dots */
+.roadmap-page::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: radial-gradient(circle, rgba(200,41,43,0.1) 2px, transparent 2px);
+  background-size: 40px 40px;
+  animation: moveDots 30s linear infinite;
+  z-index: 0;
 }
 
+@keyframes moveDots {
+  0% { transform: translate(0,0); }
+  50% { transform: translate(20px,20px); }
+  100% { transform: translate(0,0); }
+}
+
+/* Make all children above background */
+.roadmap-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Back button */
 .back-btn {
   background: none;
   border: none;
   font-size: 13px;
   color: #888;
   cursor: pointer;
-  padding: 0;
-  margin-bottom: 0.75rem;
-  display: block;
+  margin-bottom: 1rem;
+  display: inline-block;
+  transition: all 0.2s;
 }
 
 .back-btn:hover {
-  color: #111;
+  color: #c8292b;
+  transform: translateX(-2px);
 }
 
+/* Page header */
 .page-header h1 {
-  font-size: 22px;
-  font-weight: 600;
+  font-size: 26px;
+  font-weight: 700;
   color: #111;
-  margin: 0 0 4px;
+  margin: 0 0 6px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
 .page-header p {
   font-size: 14px;
-  color: #888;
-  margin: 0;
+  color: #666;
+  margin: 0 0 1.5rem;
 }
 
+/* ============================= */
+/* SCORE SUMMARY */
+/* ============================= */
 .score-summary {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 1.5rem;
   background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
-  padding: 1.25rem 1.5rem;
-  margin-bottom: 1.5rem;
+  border-radius: 16px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 12px 28px rgba(200,41,43,0.15);
+  margin-bottom: 2rem;
+  gap: 1rem;
 }
 
-.summary-left,
-.summary-right {
+.summary-item {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 4px;
+  flex: 1;
+  text-align: center;
 }
 
-.score-value {
-  font-size: 26px;
-  font-weight: 600;
-  color: #c8292b;
+.summary-value {
+  font-size: 28px;
+  font-weight: 700;
 }
 
-.threshold-value {
-  font-size: 26px;
-  font-weight: 600;
-  color: #111;
+.summary-item:nth-child(1) .summary-value {
+  color: #c8292b; /* red */
 }
 
-.gaps-value {
-  font-size: 26px;
-  font-weight: 600;
-  color: #854f0b;
+.summary-item:nth-child(2) .summary-value {
+  color: #111; /* dark */
 }
 
-.score-label {
+.summary-item:nth-child(3) .summary-value {
+  color: #854f0b; /* amber */
+}
+
+.summary-label {
   font-size: 12px;
   color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .summary-divider {
   width: 1px;
-  height: 40px;
+  height: 50px;
   background: #e0e0e0;
 }
 
+/* ============================= */
+/* GAP CARDS / SKILLS */
+/* ============================= */
 .gap-cards {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .gap-card {
   background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
+  border-radius: 16px;
   padding: 1.5rem;
+  box-shadow: 0 8px 22px rgba(200,41,43,0.08);
+  transition: transform 0.2s, box-shadow 0.3s;
+}
+
+.gap-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(200,41,43,0.18);
 }
 
 .gap-header {
@@ -111,14 +163,15 @@
   font-size: 16px;
   font-weight: 600;
   color: #111;
-  margin: 0;
 }
 
 .gap-badge {
   font-size: 11px;
   padding: 4px 10px;
-  border-radius: 6px;
+  border-radius: 8px;
   font-weight: 500;
+  text-transform: uppercase;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 .badge-missing {
@@ -131,9 +184,11 @@
   color: #854f0b;
 }
 
+/* Level text row */
 .level-row {
   display: flex;
   gap: 1.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .level-text {
@@ -145,28 +200,37 @@
   color: #111;
 }
 
+/* Progress bars */
 .progress-track {
   background: #f0f0f0;
   border-radius: 999px;
-  height: 8px;
+  height: 10px;
   overflow: hidden;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
 
 .progress-fill {
   height: 100%;
   border-radius: 999px;
-  transition: width 0.5s ease;
+  transition: width 0.8s ease, background 0.5s ease;
 }
 
 .fill-red {
-  background: #c8292b;
+  background: linear-gradient(90deg, #c8292b, #ff6f61);
+  animation: fillPulse 2s infinite alternate;
 }
 
 .fill-amber {
-  background: #ef9f27;
+  background: linear-gradient(90deg, #ef9f27, #ffc65d);
+  animation: fillPulse 2s infinite alternate;
 }
 
+@keyframes fillPulse {
+  0% { opacity: 0.8; }
+  100% { opacity: 1; }
+}
+
+/* Resources list */
 .resources-label {
   font-size: 12px;
   font-weight: 500;
@@ -204,18 +268,33 @@
 .res-link {
   color: #185fa5;
   text-decoration: none;
+  transition: color 0.2s;
 }
 
 .res-link:hover {
   text-decoration: underline;
+  color: #0f3d7a;
 }
 
 .no-resources {
   font-size: 13px;
   color: #aaa;
-  margin: 0;
 }
 
+/* Success box */
+.success-box {
+  background: #eaf3de;
+  border: 1px solid #c0dd97;
+  color: #3b6d11;
+  border-radius: 12px;
+  padding: 15px 20px;
+  text-align: center;
+  font-size: 14px;
+  margin: 1rem 0;
+  font-weight: 600;
+}
+
+/* Page footer button */
 .page-footer {
   display: flex;
   justify-content: flex-end;
@@ -225,14 +304,24 @@
 .btn-listings {
   padding: 12px 28px;
   font-size: 15px;
-  font-weight: 500;
-  background: #c8292b;
+  font-weight: 600;
+  background: linear-gradient(135deg, #c8292b, #ff6f61);
   color: #fff;
   border: none;
-  border-radius: 10px;
+  border-radius: 14px;
   cursor: pointer;
+  transition: all 0.3s;
 }
 
 .btn-listings:hover {
-  background: #a82224;
+  background: linear-gradient(135deg, #a82224, #ff4c3a);
+  transform: translateY(-1px);
+}
+
+/* Section titles */
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 1rem;
 }
