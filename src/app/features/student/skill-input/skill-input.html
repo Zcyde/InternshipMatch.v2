@@ -36,8 +36,8 @@
     <div class="skill-item" *ngFor="let skill of skills">
       <div class="skill-info">
         <span class="skill-name">{{ skill.name }}</span>
-        <span class="skill-level-label" [class.set]="skill.proficiency > 0">
-          {{ proficiencyLabel(skill.proficiency) }}
+        <span class="skill-level-label" [class.set]="getProficiencyForSkill(skill.name) > 0">
+          {{ proficiencyLabel(getProficiencyForSkill(skill.name)) }}
         </span>
       </div>
 
@@ -45,7 +45,7 @@
         <button
           *ngFor="let level of [1,2,3,4,5]"
           class="level-btn"
-          [class.active]="skill.proficiency === level"
+          [class.active]="getProficiencyForSkill(skill.name) === level"
           (click)="setProficiency(skill.name, level)">
           {{ level }}
         </button>

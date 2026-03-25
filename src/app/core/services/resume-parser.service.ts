@@ -9,7 +9,7 @@ export class ResumeParserService {
 
   constructor() {
     // Required for pdfjs to work in a browser environment
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+    pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.mjs';
   }
 
   async extractText(file: File): Promise<string> {
@@ -45,9 +45,14 @@ export class ResumeParserService {
   }
 
   private async performOCR(file: File): Promise<string> {
-    const worker = await createWorker('eng');
-    const { data: { text } } = await worker.recognize(file);
-    await worker.terminate();
-    return text;
+    const imageUrl = URL.createObjectURL(file);
+    try {
+      const worker = await createWorker('eng');
+      const { data: { text } } = await worker.recognize(imageUrl);
+      await worker.terminate();
+      return text;
+    } finally {
+      URL.revokeObjectURL(imageUrl);
+    }
   }
 }

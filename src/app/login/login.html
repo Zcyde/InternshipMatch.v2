@@ -36,6 +36,7 @@
       </div>
 
       <p class="error-text" *ngIf="errorMessage">{{ errorMessage }}</p>
+      <p class="success-text" *ngIf="successMessage" style="color: #28a745; font-size: 0.9rem; margin-bottom: 12px; text-align: center; font-weight: 600;">{{ successMessage }}</p>
 
       <button class="btn-login" (click)="isSignupMode ? onSignup() : onLogin()">
         {{ isSignupMode ? 'Register Student' : (isAdminMode ? 'Admin Sign In' : 'Enter System') }}

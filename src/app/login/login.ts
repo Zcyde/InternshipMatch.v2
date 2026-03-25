@@ -14,6 +14,7 @@ import { AuthService } from '../auth.service';
 export class Login {
   loginData = { username: '', password: '', name: '', email: '' };
   errorMessage: string = '';
+  successMessage: string = '';
   isSignupMode: boolean = false;
   isAdminMode: boolean = false;
 
@@ -22,16 +23,19 @@ export class Login {
   switchToAdmin() {
     this.isAdminMode = true;
     this.isSignupMode = false;
+    this.successMessage = '';
     this.resetForm();
   }
 
   switchToStudent() {
     this.isAdminMode = false;
     this.isSignupMode = false;
+    this.successMessage = '';
     this.resetForm();
   }
 
   onLogin() {
+    this.successMessage = '';
     if (!this.loginData.username || !this.loginData.password) {
       this.errorMessage = 'Please enter your credentials.';
       return;
@@ -69,8 +73,11 @@ export class Login {
     this.authService.register(this.loginData)
       .subscribe({
         next: (res: any) => {
-          alert(res.message || 'Registration successful! You can now log in.');
-          this.toggleMode();
+          this.successMessage = res.message || 'Registration successful! You can now log in.';
+          alert(this.successMessage);
+          this.isSignupMode = false;
+          this.isAdminMode = false;
+          this.resetForm();
         },
         error: (err) => {
           this.errorMessage = err.error?.message || 'Registration failed. Try again.';
@@ -81,6 +88,7 @@ export class Login {
   toggleMode() {
     this.isSignupMode = !this.isSignupMode;
     this.isAdminMode = false;
+    this.successMessage = '';
     this.resetForm();
   }
 

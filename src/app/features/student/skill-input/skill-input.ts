@@ -88,8 +88,9 @@ export class SkillInput implements OnInit {
 
       this.isScanning = false;
       this.cdr.detectChanges();
-    } catch (error) {
-      this.errorMessage = 'Failed to parse the resume. Please ensure it is a valid PDF.';
+    } catch (error: any) {
+      console.error('Resume parsing error:', error);
+      this.errorMessage = `Failed to parse the resume. Error: ${error.message || error.toString()}`;
       this.isScanning = false;
       this.cdr.detectChanges();
     }
