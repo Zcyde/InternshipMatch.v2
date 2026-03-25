@@ -1,67 +1,84 @@
 @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@700&family=Source+Sans+3:wght@400;500;600&display=swap');
 
+/* ===============================
+   Page Wrapper
+=============================== */
 .role-selection-wrapper {
-  max-width: 920px;
-  margin: 56px auto;
-  padding: 0 32px;
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 24px;
+  font-family: 'Source Sans 3', sans-serif;
+  background: #f9fafc; /* soft background for readability */
+  color: #111;
 }
 
+/* ===============================
+   Eyebrow / Small Header
+=============================== */
 .role-eyebrow {
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: #c8292b;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
+/* ===============================
+   Main Header
+=============================== */
 .role-header {
-  margin-bottom: 52px;
-  border-bottom: 1px solid #e2e6ed;
-  padding-bottom: 32px;
+  margin-bottom: 40px;
 }
 
 .role-header h1 {
   font-family: 'Libre Baskerville', serif;
-  font-size: 2rem;
+  font-size: 2.4rem;
   font-weight: 700;
   color: #0f1f3d;
-  letter-spacing: -0.3px;
-  margin-bottom: 10px;
-  line-height: 1.2;
+  margin-bottom: 12px;
+  line-height: 1.3;
 }
 
 .role-header p {
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 0.9rem;
-  color: #6b7a99;
+  font-size: 1.05rem;
+  color: #333;
   line-height: 1.6;
 }
 
+/* ===============================
+   Roles Grid Layout
+=============================== */
 .roles-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
 }
 
+/* ===============================
+   Role Card Styling
+=============================== */
 .role-card {
-  background: #ffffff;
-  border: 0.5px solid #e2e6ed;
-  border-radius: 12px;
-  padding: 24px;
+  background: #fff;
+  border-radius: 18px;
+  padding: 28px 24px;
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  position: relative;
 }
 
 .role-card:hover {
-  background: #0f1f3d;
-  border-color: #0f1f3d;
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  background: #c8292b;
+  color: #fff;
 }
 
+/* Card Top Number and Badge */
 .card-top {
   display: flex;
   justify-content: space-between;
@@ -69,88 +86,101 @@
 }
 
 .card-number {
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 0.7rem;
+  font-size: 0.8rem;
   font-weight: 600;
-  color: #d0d4dc;
+  color: #888;
   letter-spacing: 1px;
-  transition: color 0.2s ease;
+  transition: color 0.3s ease;
 }
 
 .role-card:hover .card-number {
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .threshold-badge {
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  background: #fdf0f0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: #fde2e2;
   color: #a82123;
-  padding: 3px 9px;
-  border-radius: 3px;
+  padding: 5px 12px;
+  border-radius: 6px;
   border: 1px solid #f5c6c6;
-  white-space: nowrap;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .role-card:hover .threshold-badge {
-  background: rgba(200, 41, 43, 0.15);
-  color: #e07071;
-  border-color: rgba(200, 41, 43, 0.3);
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border-color: rgba(255,255,255,0.4);
 }
 
+/* Card Title */
 .role-card h2 {
   font-family: 'Libre Baskerville', serif;
-  font-size: 1rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: #0f1f3d;
-  line-height: 1.35;
-  transition: color 0.2s ease;
+  line-height: 1.3;
+  transition: color 0.3s ease;
 }
 
 .role-card:hover h2 {
-  color: #f0f2f7;
+  color: #fff;
 }
 
+/* Description */
 .role-description {
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 0.8rem;
-  color: #8892a4;
+  font-size: 0.95rem;
+  color: #333;
   line-height: 1.6;
   flex: 1;
+  transition: color 0.3s ease;
 }
 
+.role-card:hover .role-description {
+  color: #f8f8f8;
+}
+
+/* Footer / Select Label */
 .role-card-footer {
-  margin-top: 6px;
+  margin-top: 10px;
 }
 
 .select-label {
-  font-family: 'Source Sans 3', sans-serif;
-  font-size: 0.7rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 700;
   color: #c8292b;
-  letter-spacing: 0.5px;
   text-transform: uppercase;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  transition: color 0.2s ease, gap 0.18s ease;
+  transition: all 0.3s ease;
 }
 
 .role-card:hover .select-label {
-  color: #e07071;
+  color: #fff;
   gap: 10px;
 }
 
-/* States */
+/* ===============================
+   States: loading, error, empty
+=============================== */
 .loading, .error, .empty {
-  font-family: 'Source Sans 3', sans-serif;
+  font-size: 1rem;
   text-align: center;
   padding: 60px 0;
-  font-size: 0.875rem;
-  color: #6b7a99;
+  color: #555;
 }
 
-.error { color: #a82123; }
+.error {
+  color: #a82123;
+}
+
+/* ===============================
+   Extra: Add subtle background pattern
+=============================== */
+.role-selection-wrapper {
+  background-color: #f9fafc;
+  background-image: radial-gradient(circle, #e0e0e0 1px, transparent 1px);
+  background-size: 20px 20px;
+}
